@@ -4,7 +4,7 @@
 {{range $consumer.Subscriptions -}}
 module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
   source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFQueueSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-{{hclident $consumer.Queue}}.queue_arn}"
   topic = "${module.topic-{{hclident .}}.arn}"
@@ -16,7 +16,7 @@ module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
 {{range $consumer.Subscriptions -}}
 module "sub-{{$consumer.FunctionName | hclident }}-{{hclident .}}" {
   source  = "Automatic/hedwig-lambda-subscription/aws"
-  version = "~> {{TFLambdaSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSLambdaSubscriptionModuleVersion}}"
 
   function_arn       = "{{$consumer.FunctionARN}}"
   function_name      = "{{$consumer.FunctionName}}"{{if $consumer.FunctionQualifier}}

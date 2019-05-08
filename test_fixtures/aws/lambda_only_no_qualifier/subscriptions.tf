@@ -3,7 +3,7 @@
 
 module "sub-my-function-my-topic" {
   source  = "Automatic/hedwig-lambda-subscription/aws"
-  version = "~> {{TFLambdaSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSLambdaSubscriptionModuleVersion}}"
 
   function_arn  = "arn:aws:lambda:us-west-2:12345:function:my_function"
   function_name = "my_function"

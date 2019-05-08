@@ -1,4 +1,4 @@
-module github.com/Automatic/hedwig-terraform-generator
+module github.com/standard-ai/hedwig-terraform-generator
 
 require (
 	github.com/hashicorp/hcl v1.0.0

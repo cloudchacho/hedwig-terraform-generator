@@ -1,8 +1,8 @@
 # Hedwig Terraform Generator
 
-[![Build Status](https://travis-ci.org/Automatic/hedwig-terraform-generator.svg?branch=master)](https://travis-ci.org/Automatic/hedwig-terraform-generator)
+[![Build Status](https://travis-ci.org/Standard-Cognition/hedwig-terraform-generator.svg?branch=master)](https://travis-ci.org/Standard-Cognition/hedwig-terraform-generator)
 
-[Hedwig](https://github.com/Automatic/hedwig) is a inter-service communication bus that works on AWS SQS/SNS, while 
+[Hedwig](https://github.com/Automatic/hedwig) is a inter-service communication bus that works on AWS and Google Cloud, while 
 keeping things pretty simple and straight forward. It uses [json schema](http://json-schema.org/) draft v4 for 
 schema validation so all incoming and outgoing messages are validated against pre-defined schema.
 
@@ -15,7 +15,7 @@ away details about [Terraform](https://www.terraform.io/).
 ### Installation
 
 Download the latest version of the release from 
-[Github releases](https://github.com/Automatic/hedwig-terraform-generator/releases) - 
+[Github releases](https://github.com/standard-ai/hedwig-terraform-generator/releases) - 
 it's distributed as a zip containing a Go binary file.
 
 ### Configuration
@@ -36,7 +36,7 @@ an actual resource at runtime.
 Run 
 
 ```sh
-./hedwig-terraform-generator apply-config <config file path>
+./hedwig-terraform-generator apply-config --provider <cloud provider> <config file path>
 ```
 
 to create Terraform modules. The module is named `hedwig` by default in the current directory.
@@ -55,7 +55,7 @@ Assuming that you have go installed, set up your environment:
 
 ```sh
 $ # in a location NOT in your GOPATH:
-$ git checkout github.com/Automatic/hedwig-terraform-generator
+$ git checkout github.com/standard-ai/hedwig-terraform-generator
 $ cd hedwig-terraform-generator
 $ go get -mod=readonly -v ./...
 $ GO111MODULE=off go get github.com/go-bindata/go-bindata/...
@@ -76,7 +76,7 @@ $ go test -run TestGenerate ./...
 
 ## Release Notes
 
-[Github Releases](https://github.com/Automatic/hedwig-terraform-generator/releases)
+[Github Releases](https://github.com/standard-ai/hedwig-terraform-generator/releases)
 
 ## How to publish
 

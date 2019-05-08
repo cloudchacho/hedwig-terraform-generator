@@ -3,14 +3,14 @@
 
 module "topic-my-topic" {
   source  = "Automatic/hedwig-topic/aws"
-  version = "~> {{TFTopicModuleVersion}}"
+  version = "~> {{TFAWSTopicModuleVersion}}"
 
   topic = "my-topic"
 }
 
 module "topic-my-topic-2" {
   source  = "Automatic/hedwig-topic/aws"
-  version = "~> {{TFTopicModuleVersion}}"
+  version = "~> {{TFAWSTopicModuleVersion}}"
 
   topic = "my-topic2"
 }

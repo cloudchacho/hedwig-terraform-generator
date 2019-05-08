@@ -3,7 +3,7 @@
 
 module "sub-dev-myapp-my-topic" {
   source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFQueueSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-dev-myapp.queue_arn}"
   topic = "${module.topic-my-topic.arn}"

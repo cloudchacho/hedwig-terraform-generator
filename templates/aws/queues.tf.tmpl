@@ -3,7 +3,7 @@
 {{range .QueueConsumers -}}
 module "consumer-{{hclident .Queue}}" {
   source  = "Automatic/hedwig-queue/aws"
-  version = "~> {{TFQueueModuleVersion}}"
+  version = "~> {{TFAWSQueueModuleVersion}}"
 
   queue          = "{{.Queue}}"
   aws_region     = "${var.aws_region}"

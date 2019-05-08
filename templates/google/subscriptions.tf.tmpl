@@ -1,0 +1,20 @@
+{{ tfDoNotEditStamp }}
+
+{{range $consumer := .PullConsumers -}}
+{{range $consumer.Subscriptions -}}
+module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
+  source  = "standard-ai/hedwig-subscription/google"
+  version = "~> {{TFGoogleSubscriptionModuleVersion}}"
+
+  queue = "{{ $consumer.Queue }}"
+  topic = "${module.topic-{{hclident .}}.name}"
+
+  dataflow_tmp_gcs_location = "${var.dataflow_tmp_gcs_location}"
+  dataflow_template_gcs_path = "${var.dataflow_template_gcs_path}"
+
+  {{with $consumer.Labels -}}
+  labels = {{hclvalue .}}
+  {{- end}}
+}
+{{- end}}
+{{- end}}

@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
+	"gopkg.in/urfave/cli.v1"
 	"os"
 	"path/filepath"
 	"text/template"
-
-	"github.com/pkg/errors"
-	"gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -17,22 +16,45 @@ const (
 	variablesFile     = "variables.tf"
 )
 
-func shouldSkipFile(config *Config, file string) bool {
-	switch file {
-	case queuesFile:
-		return len(config.QueueConsumers) == 0
-	case variablesFile:
-		return len(config.QueueConsumers) == 0
-	default:
-		return false
+const (
+	queuesTmplFile        = "queues.tf.tmpl"
+	subscriptionsTmplFile = "subscriptions.tf.tmpl"
+	topicsTmplFile        = "topics.tf.tmpl"
+	variablesTmplFile     = "variables.tf.tmpl"
+)
+
+type configWriterImpl interface {
+	initTemplates() (*template.Template, error)
+	shouldSkipFile(file string) bool
+}
+
+type configWriter struct {
+	c                *cli.Context
+	configWriterImpl configWriterImpl
+	config           interface{}
+}
+
+func newConfigWriter(c *cli.Context, config interface{}) *configWriter {
+	var writerImpl configWriterImpl
+	if c.GlobalString(cloudProviderFlag) == cloudProviderGoogle {
+		writerImpl = &googleConfigWriter{c, config.(*GoogleConfig)}
+	} else if c.GlobalString(cloudProviderFlag) == cloudProviderAWS {
+		writerImpl = &awsConfigWriter{c, config.(*AWSConfig)}
+	} else {
+		return nil
+	}
+	return &configWriter{
+		c,
+		writerImpl,
+		config,
 	}
 }
 
-func writeFiles(config *Config, module string, templates *template.Template) error {
+func (w *configWriter) writeFiles(module string, templates *template.Template) error {
 	files := []string{queuesFile, subscriptionsFile, topicsFile, variablesFile}
 
 	for _, file := range files {
-		if shouldSkipFile(config, file) {
+		if w.configWriterImpl.shouldSkipFile(file) {
 			continue
 		}
 		path := filepath.Join(module, file)
@@ -41,14 +63,11 @@ func writeFiles(config *Config, module string, templates *template.Template) err
 			return err
 		}
 		templateName := fmt.Sprintf("%s.tmpl", file)
-		err = templates.ExecuteTemplate(f, templateName, config)
+		err = templates.ExecuteTemplate(f, templateName, w.config)
 		if err != nil {
 			return err
 		}
 		errClose := f.Close()
-		if err != nil {
-			return err
-		}
 		if errClose != nil {
 			return errClose
 		}
@@ -56,46 +75,8 @@ func writeFiles(config *Config, module string, templates *template.Template) err
 	return nil
 }
 
-func initTemplates(c *cli.Context) (*template.Template, error) {
-	actions := map[string][]string{
-		"QueueAlertAlarmActions": c.StringSlice(queueAlertAlarmActionsFlag),
-		"QueueAlertOKActions":    c.StringSlice(queueAlertOKActionsFlag),
-		"DLQAlertAlarmActions":   c.StringSlice(dlqAlertAlarmActionsFlag),
-		"DLQAlertOKActions":      c.StringSlice(dlqAlertOKActionsFlag),
-	}
-	variables := map[string]string{
-		"AwsAccountID": c.String(awsAccountIDFlag),
-		"AwsRegion":    c.String(awsRegionFlag),
-	}
-
-	templates := template.New("variables.tf.tmpl")
-	templates = templates.Funcs(template.FuncMap{
-		"generator_version": func() string { return VERSION },
-		"actions":           func() map[string][]string { return actions },
-		"variables":         func() map[string]string { return variables },
-		"hclvalue":          hclvalue,
-		"hclident":          hclident,
-		"tfDoNotEditStamp":  func() string { return tfDoNotEditStamp },
-		"alerting":          func() bool { return c.Bool(alertingFlag) },
-
-		"TFQueueModuleVersion":              func() string { return TFQueueModuleVersion },
-		"TFQueueSubscriptionModuleVersion":  func() string { return TFQueueSubscriptionModuleVersion },
-		"TFLambdaSubscriptionModuleVersion": func() string { return TFLambdaSubscriptionModuleVersion },
-		"TFTopicModuleVersion":              func() string { return TFTopicModuleVersion },
-	})
-
-	for _, name := range AssetNames() {
-		_, err := templates.New(name).Parse(string(MustAsset(name)))
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return templates, nil
-}
-
-func writeTerraform(config *Config, c *cli.Context) error {
-	module := c.String(moduleFlag)
+func (w *configWriter) writeTerraform() error {
+	module := w.c.String(moduleFlag)
 
 	if len(module) == 0 {
 		return fmt.Errorf("invalid module")
@@ -108,12 +89,12 @@ func writeTerraform(config *Config, c *cli.Context) error {
 		return fmt.Errorf("unable to create module dir: %q, error: %q", module, err)
 	}
 
-	templates, err := initTemplates(c)
+	templates, err := w.configWriterImpl.initTemplates()
 	if err != nil {
 		return errors.Wrap(err, "unable to initialize templates")
 	}
 
-	if err := writeFiles(config, module, templates); err != nil {
+	if err := w.writeFiles(module, templates); err != nil {
 		return err
 	}
 

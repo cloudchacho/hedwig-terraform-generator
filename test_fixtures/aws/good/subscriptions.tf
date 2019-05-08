@@ -3,7 +3,7 @@
 
 module "sub-dev-myapp-my-topic" {
   source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFQueueSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-dev-myapp.queue_arn}"
   topic = "${module.topic-my-topic.arn}"
@@ -11,7 +11,7 @@ module "sub-dev-myapp-my-topic" {
 
 module "sub-dev-myapp-my-topic-2" {
   source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFQueueSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-dev-myapp.queue_arn}"
   topic = "${module.topic-my-topic-2.arn}"
@@ -19,7 +19,7 @@ module "sub-dev-myapp-my-topic-2" {
 
 module "sub-dev-secondapp-my-topic-2" {
   source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFQueueSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-dev-secondapp.queue_arn}"
   topic = "${module.topic-my-topic-2.arn}"
@@ -27,7 +27,7 @@ module "sub-dev-secondapp-my-topic-2" {
 
 module "sub-my-function-my-topic" {
   source  = "Automatic/hedwig-lambda-subscription/aws"
-  version = "~> {{TFLambdaSubscriptionModuleVersion}}"
+  version = "~> {{TFAWSLambdaSubscriptionModuleVersion}}"
 
   function_arn       = "arn:aws:lambda:us-west-2:12345:function:myFunction:deployed"
   function_name      = "myFunction"

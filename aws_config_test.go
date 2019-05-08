@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestValidateSchemaFail(t *testing.T) {
+func TestValidateAWSSchemaFail(t *testing.T) {
 	schema := []byte(`
 {
   "consumers": [
@@ -20,27 +20,21 @@ func TestValidateSchemaFail(t *testing.T) {
       }
     }
   ],
-  "queue_subscriptions": [
-    {
-      "queue": "dev-myapp",
-      "topic": "my-topic"
-    }
-  ],
   "topics": "not-a-list"
 }
 `)
-	assert.EqualError(t, json.Unmarshal(schema, &Config{}),
-		"json: cannot unmarshal string into Go struct field Config.topics of type []string")
+	assert.EqualError(t, json.Unmarshal(schema, &AWSConfig{}),
+		"json: cannot unmarshal string into Go struct field AWSConfig.topics of type []string")
 }
 
-func TestValidateTopic(t *testing.T) {
+func TestValidateAWSTopic(t *testing.T) {
 	invalidTopics := []string{
 		"UPPER",
 		"under_score",
 		"punctuation!",
 	}
 
-	config := Config{}
+	config := AWSConfig{}
 	for _, topic := range invalidTopics {
 		config.Topics = []string{topic}
 		assert.EqualError(
@@ -53,16 +47,16 @@ func TestValidateTopic(t *testing.T) {
 	}
 }
 
-func TestValidateQueue(t *testing.T) {
+func TestValidateAWSQueue(t *testing.T) {
 	invalidQueues := []string{
 		"lower",
 		"UNDER_SCORE",
 		"PUNCTUATION!",
 	}
 
-	config := Config{}
+	config := AWSConfig{}
 	for _, queue := range invalidQueues {
-		config.QueueConsumers = []*QueueConsumer{{Queue: queue}}
+		config.QueueConsumers = []*AWSQueueConsumer{{Queue: queue}}
 		assert.EqualError(
 			t,
 			config.validate(),
@@ -73,9 +67,9 @@ func TestValidateQueue(t *testing.T) {
 	}
 }
 
-func TestValidateSubscriptionTopic(t *testing.T) {
-	config := Config{
-		QueueConsumers: []*QueueConsumer{{Queue: "QUEUE", Subscriptions: []string{"does-not-exist"}}},
+func TestValidateAWSSubscriptionTopic(t *testing.T) {
+	config := AWSConfig{
+		QueueConsumers: []*AWSQueueConsumer{{Queue: "QUEUE", Subscriptions: []string{"does-not-exist"}}},
 	}
 	assert.EqualError(
 		t,
@@ -86,8 +80,8 @@ func TestValidateSubscriptionTopic(t *testing.T) {
 }
 
 func TestValidateLambdaSubscriptionTopic(t *testing.T) {
-	config := Config{
-		LambdaConsumers: []*LambdaConsumer{{FunctionARN: "function", Subscriptions: []string{"does-not-exist"}}},
+	config := AWSConfig{
+		LambdaConsumers: []*AWSLambdaConsumer{{FunctionARN: "function", Subscriptions: []string{"does-not-exist"}}},
 	}
 	assert.EqualError(
 		t,
@@ -97,7 +91,7 @@ func TestValidateLambdaSubscriptionTopic(t *testing.T) {
 	)
 }
 
-func TestValidJSON(t *testing.T) {
+func TestValidAWSJSON(t *testing.T) {
 	var validConfig = []byte(`{
   "topics": [
     "my-topic"
@@ -124,8 +118,8 @@ func TestValidJSON(t *testing.T) {
   ]
 }`)
 
-	var validConfigObj = Config{
-		QueueConsumers: []*QueueConsumer{
+	var validConfigObj = AWSConfig{
+		QueueConsumers: []*AWSQueueConsumer{
 			{
 				"DEV-MYAPP",
 				map[string]string{
@@ -135,7 +129,7 @@ func TestValidJSON(t *testing.T) {
 				[]string{"my-topic"},
 			},
 		},
-		LambdaConsumers: []*LambdaConsumer{
+		LambdaConsumers: []*AWSLambdaConsumer{
 			{
 				FunctionARN:   "arn:aws:lambda:us-west-2:12345:function:myFunction:deployed",
 				Subscriptions: []string{"my-topic"},
@@ -144,7 +138,7 @@ func TestValidJSON(t *testing.T) {
 		Topics: []string{"my-topic"},
 	}
 
-	config := Config{}
+	config := AWSConfig{}
 	json.Unmarshal(validConfig, &config)
 	assert.Equal(t, validConfigObj, config)
 }
@@ -168,8 +162,8 @@ func TestValidJSONNoLambda(t *testing.T) {
   ]
 }`)
 
-	var validConfigObj = Config{
-		QueueConsumers: []*QueueConsumer{
+	var validConfigObj = AWSConfig{
+		QueueConsumers: []*AWSQueueConsumer{
 			{
 				"DEV-MYAPP",
 				map[string]string{
@@ -182,12 +176,12 @@ func TestValidJSONNoLambda(t *testing.T) {
 		Topics: []string{"my-topic"},
 	}
 
-	config := Config{}
+	config := AWSConfig{}
 	json.Unmarshal(validConfig, &config)
 	assert.Equal(t, validConfigObj, config)
 }
 
-func TestValidNoConsumers(t *testing.T) {
+func TestAWSValidNoConsumers(t *testing.T) {
 	var validConfig = []byte(`{
   "topics": [
     "my-topic"
@@ -200,8 +194,8 @@ func TestValidNoConsumers(t *testing.T) {
   ]
 }`)
 
-	var validConfigObj = Config{
-		LambdaConsumers: []*LambdaConsumer{
+	var validConfigObj = AWSConfig{
+		LambdaConsumers: []*AWSLambdaConsumer{
 			{
 				FunctionARN:   "arn:aws:lambda:us-west-2:12345:function:myFunction:deployed",
 				Subscriptions: []string{"my-topic"},
@@ -210,13 +204,13 @@ func TestValidNoConsumers(t *testing.T) {
 		Topics: []string{"my-topic"},
 	}
 
-	config := Config{}
+	config := AWSConfig{}
 	json.Unmarshal(validConfig, &config)
 	assert.Equal(t, validConfigObj, config)
 }
 
 func TestLambdaConsumer_Init(t *testing.T) {
-	ls := LambdaConsumer{
+	ls := AWSLambdaConsumer{
 		FunctionARN: "arn:aws:lambda:us-west-2:12345:function:myFunction:deployed",
 	}
 	assert.NoError(t, ls.init())
@@ -225,14 +219,14 @@ func TestLambdaConsumer_Init(t *testing.T) {
 }
 
 func TestLambdaConsumer_Init_Fail(t *testing.T) {
-	ls := LambdaConsumer{
+	ls := AWSLambdaConsumer{
 		FunctionARN: "arn:aws:lambda:us-west-2:12345:foo:myFunction:deployed",
 	}
 	assert.Error(t, ls.init(), "unable to parse function ARN")
 }
 
 func TestLambdaConsumer_Init_NoQualifier(t *testing.T) {
-	ls := LambdaConsumer{
+	ls := AWSLambdaConsumer{
 		FunctionARN: "arn:aws:lambda:us-west-2:12345:function:myFunction",
 	}
 	assert.NoError(t, ls.init())
@@ -241,7 +235,7 @@ func TestLambdaConsumer_Init_NoQualifier(t *testing.T) {
 }
 
 func TestLambdaConsumer_Init_Interpolated(t *testing.T) {
-	ls := LambdaConsumer{
+	ls := AWSLambdaConsumer{
 		FunctionARN:  "${aws_lambda_function.myFunction.arn}",
 		FunctionName: "myFunction",
 	}
@@ -251,7 +245,7 @@ func TestLambdaConsumer_Init_Interpolated(t *testing.T) {
 }
 
 func TestLambdaConsumer_Init_InterpolatedFail(t *testing.T) {
-	ls := LambdaConsumer{
+	ls := AWSLambdaConsumer{
 		FunctionARN: "${aws_lambda_function.myFunction.arn}",
 	}
 	assert.Error(t, ls.init(), "unable to parse function ARN since it's an interpolated value")

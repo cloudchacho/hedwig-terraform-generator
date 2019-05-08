@@ -3,7 +3,7 @@
 
 module "consumer-dev-myapp" {
   source  = "Automatic/hedwig-queue/aws"
-  version = "~> {{TFQueueModuleVersion}}"
+  version = "~> {{TFAWSQueueModuleVersion}}"
 
   queue          = "DEV-MYAPP"
   aws_region     = "${var.aws_region}"

@@ -1,0 +1,13 @@
+{{ tfDoNotEditStamp }}
+
+variable "dataflow_tmp_gcs_location" {
+{{with variables.DataFlowTmpGCSLocation -}}
+  default = "{{ . }}"
+{{- end}}
+}
+
+variable "dataflow_template_gcs_path" {
+{{with variables.DataFlowTemplateGCSPath -}}
+  default = "{{ . }}"
+{{- end}}
+}

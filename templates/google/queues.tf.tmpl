@@ -1,0 +1,14 @@
+{{ tfDoNotEditStamp }}
+
+{{range .PullConsumers -}}
+module "consumer-{{hclident .Queue}}" {
+  source  = "standard-ai/hedwig-queue/google"
+  version = "~> {{TFGoogleQueueModuleVersion}}"
+
+  queue          = "{{.Queue}}"
+
+  {{with .Labels -}}
+  labels = {{hclvalue .}}
+  {{- end}}
+}
+{{- end}}

@@ -2,8 +2,8 @@
 
 {{range .Topics -}}
 module "topic-{{hclident .}}" {
-  source  = "Automatic/hedwig-topic/aws"
-  version = "~> {{TFTopicModuleVersion}}"
+  source  = "standard-ai/hedwig-topic/google"
+  version = "~> {{TFGoogleTopicModuleVersion}}"
 
   topic = "{{.}}"
 }
