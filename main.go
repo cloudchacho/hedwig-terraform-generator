@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v2.0.0"
+	VERSION = "v2.1.0"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -35,7 +35,7 @@ const (
 	TFGoogleTopicModuleVersion = "1.0.0"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
-	TFGoogleQueueModuleVersion = "1.0.0"
+	TFGoogleQueueModuleVersion = "1.1.0"
 
 	// TFGoogleSubscriptionModuleVersion represents the version of the Google hedwig-subscription module
 	TFGoogleSubscriptionModuleVersion = "1.0.0"
@@ -48,49 +48,82 @@ const (
 	// alertingFlag represents the cli flag that indicates if alerting should be generated
 	alertingFlag = "alerting"
 
-	// awsAccountIDFlag represents the cli flag for aws account id
+	// awsAccountIDFlag represents the cli flag for aws account id (AWS only)
 	awsAccountIDFlag = "aws-account-id"
 
-	// awsRegionFlag represents the cli flag for aws region
+	// awsRegionFlag represents the cli flag for aws region (AWS only)
 	awsRegionFlag = "aws-region"
 
 	// cloudProviderFlag represents the cli flag for cloud provider name
 	cloudProviderFlag = "cloud"
 
-	// dlqAlertAlarmActionsFlag represents the cli flag for DLQ alert actions on ALARM
+	// dlqAlertAlarmActionsFlag represents the cli flag for DLQ alert actions on ALARM (AWS only)
 	dlqAlertAlarmActionsFlag = "dlq-alert-alarm-actions"
 
-	// dlqAlertOKActionsFlag represents the cli flag for DLQ alert actions on OK
+	// dlqAlertOKActionsFlag represents the cli flag for DLQ alert notification channels (Google only)
+	dlqAlertNotificationChannelsFlag = "dlq-alert-notification-channels"
+
+	// dlqAlertOKActionsFlag represents the cli flag for DLQ alert actions on OK (AWS only)
 	dlqAlertOKActionsFlag = "dlq-alert-ok-actions"
 
-	// googleDataFlowTmpGCSLocationFlag represents the cli flag for DataFlow temporary GCS location
+	// googleDataFlowTmpGCSLocationFlag represents the cli flag for DataFlow temporary GCS location (Google only)
 	googleDataFlowTmpGCSLocationFlag = "dataflow-tmp-gcs-location"
 
-	// googleDataFlowTemplateGCSPathFlag represents the cli flag for DataFlow template GCS path
+	// googleDataFlowTemplateGCSPathFlag represents the cli flag for DataFlow template GCS path (Google only)
 	googleDataFlowTemplateGCSPathFlag = "dataflow-template-gcs-path"
 
 	// moduleFlag represents the cli flag for output module name
 	moduleFlag = "module"
 
-	// queueAlertAlarmActionsFlag represents the cli flag for DLQ alert actions on ALARM
+	// queueAlertAlarmActionsFlag represents the cli flag for queue alert actions on ALARM (AWS only)
 	queueAlertAlarmActionsFlag = "queue-alert-alarm-actions"
 
-	// queueAlertOKActionsFlag represents the cli flag for DLQ alert actions on OK
+	// queueAlertNotificationChannelsFlag represents the cli flag for queue alert notification channels (Google only)
+	queueAlertNotificationChannelsFlag = "queue-alert-notification-channels"
+
+	// queueAlertOKActionsFlag represents the cli flag for queue alert actions on OK
 	queueAlertOKActionsFlag = "queue-alert-ok-actions"
 )
 
-var awsOnlyFlags = []string{
-	awsAccountIDFlag,
-	awsRegionFlag,
-	dlqAlertAlarmActionsFlag,
-	dlqAlertOKActionsFlag,
-	queueAlertAlarmActionsFlag,
-	queueAlertOKActionsFlag,
+var providerSpecificFlags = map[string][]string{
+	cloudProviderAWS: {
+		awsAccountIDFlag,
+		awsRegionFlag,
+		dlqAlertAlarmActionsFlag,
+		dlqAlertOKActionsFlag,
+		queueAlertAlarmActionsFlag,
+		queueAlertOKActionsFlag,
+	},
+	cloudProviderGoogle: {
+		dlqAlertNotificationChannelsFlag,
+		googleDataFlowTemplateGCSPathFlag,
+		googleDataFlowTmpGCSLocationFlag,
+		queueAlertNotificationChannelsFlag,
+	},
 }
 
-var requiredGoogleFlags = []string{
-	googleDataFlowTemplateGCSPathFlag,
-	googleDataFlowTmpGCSLocationFlag,
+var providerRequiredFlags = map[string][]string{
+	cloudProviderAWS: {
+		awsAccountIDFlag,
+		awsRegionFlag,
+	},
+	cloudProviderGoogle: {
+		googleDataFlowTemplateGCSPathFlag,
+		googleDataFlowTmpGCSLocationFlag,
+	},
+}
+
+var providerAlertingFlags = map[string][]string{
+	cloudProviderAWS: {
+		queueAlertAlarmActionsFlag,
+		queueAlertOKActionsFlag,
+		dlqAlertAlarmActionsFlag,
+		dlqAlertOKActionsFlag,
+	},
+	cloudProviderGoogle: {
+		queueAlertNotificationChannelsFlag,
+		dlqAlertNotificationChannelsFlag,
+	},
 }
 
 func validateArgs(c *cli.Context) *cli.ExitError {
@@ -106,39 +139,12 @@ func validateArgs(c *cli.Context) *cli.ExitError {
 		return cli.NewExitError("<config-file> is required", 1)
 	}
 
-	if cloudProvider == cloudProviderAWS {
-		alertingFlagsOkay := true
-		alertingFlags := []string{
-			queueAlertAlarmActionsFlag, queueAlertOKActionsFlag, dlqAlertAlarmActionsFlag, dlqAlertOKActionsFlag}
-		if c.Bool(alertingFlag) {
-			for _, f := range alertingFlags {
-				if !c.IsSet(f) {
-					alertingFlagsOkay = false
-					msg := fmt.Sprintf("--%s is required", f)
-					if _, err := fmt.Fprint(cli.ErrWriter, msg); err != nil {
-						return cli.NewExitError(msg, 1)
-					}
-				}
-			}
-			if !alertingFlagsOkay {
-				return cli.NewExitError("missing required flags for --alerting", 1)
-			}
-		} else {
-			for _, f := range alertingFlags {
-				if c.IsSet(f) {
-					alertingFlagsOkay = false
-					msg := fmt.Sprintf("--%s is disallowed", f)
-					if _, err := fmt.Fprint(cli.ErrWriter, msg); err != nil {
-						return cli.NewExitError(msg, 1)
-					}
-				}
-			}
-			if !alertingFlagsOkay {
-				return cli.NewExitError("disallowed flags specified with missing --alerting", 1)
-			}
+	// verify provider flags are used correctly
+	for provider, flags := range providerSpecificFlags {
+		if provider == cloudProvider {
+			continue
 		}
-	} else if cloudProvider == cloudProviderGoogle {
-		for _, flag := range awsOnlyFlags {
+		for _, flag := range flags {
 			if c.IsSet(flag) {
 				return cli.NewExitError(
 					fmt.Sprintf("flag --%s disallowed for provider: %s", flag, cloudProvider),
@@ -146,13 +152,45 @@ func validateArgs(c *cli.Context) *cli.ExitError {
 				)
 			}
 		}
-		for _, flag := range requiredGoogleFlags {
-			if !c.IsSet(flag) {
-				return cli.NewExitError(
-					fmt.Sprintf("flag --%s is required for provider: %s", flag, cloudProvider),
-					1,
-				)
+	}
+
+	// verify required flags are provided
+	for _, flag := range providerRequiredFlags[cloudProvider] {
+		if !c.IsSet(flag) {
+			return cli.NewExitError(
+				fmt.Sprintf("flag --%s is required for provider: %s", flag, cloudProvider),
+				1,
+			)
+		}
+	}
+
+	// verify alerting flags are used correctly
+	alertingFlagsOkay := true
+	if c.Bool(alertingFlag) {
+		for _, f := range providerAlertingFlags[cloudProvider] {
+			if !c.IsSet(f) {
+				alertingFlagsOkay = false
+				msg := fmt.Sprintf("--%s is required\n", f)
+				if _, err := fmt.Fprint(cli.ErrWriter, msg); err != nil {
+					return cli.NewExitError(msg, 1)
+				}
 			}
+		}
+		if !alertingFlagsOkay {
+			return cli.NewExitError("missing required flags for --alerting", 1)
+		}
+	} else {
+		for _, f := range providerAlertingFlags[cloudProvider] {
+			if c.IsSet(f) {
+				alertingFlagsOkay = false
+				msg := fmt.Sprintf("--%s is disallowed\n", f)
+				if _, err := fmt.Fprint(cli.ErrWriter, msg); err != nil {
+					return cli.NewExitError(msg, 1)
+				}
+			}
+		}
+		if !alertingFlagsOkay {
+			return cli.NewExitError("disallowed flags specified with missing --alerting", 1)
 		}
 	}
 
@@ -267,11 +305,15 @@ func runApp(args []string) error {
 				},
 				cli.BoolFlag{
 					Name:  alertingFlag,
-					Usage: "Should Cloudwatch alerting be generated? (AWS only)",
+					Usage: "Should alerting be generated?",
 				},
 				cli.StringSliceFlag{
 					Name:  queueAlertAlarmActionsFlag,
 					Usage: "Cloudwatch Action ARNs for high message count in queue when in ALARM (AWS only)",
+				},
+				cli.StringSliceFlag{
+					Name:  queueAlertNotificationChannelsFlag,
+					Usage: "Stackdriver Notification Channels for high message count in queue (Google only)",
 				},
 				cli.StringSliceFlag{
 					Name:  queueAlertOKActionsFlag,
@@ -280,6 +322,10 @@ func runApp(args []string) error {
 				cli.StringSliceFlag{
 					Name:  dlqAlertAlarmActionsFlag,
 					Usage: "Cloudwatch Action ARNs for high message count in dead-letter queue when in ALARM (AWS only)",
+				},
+				cli.StringSliceFlag{
+					Name:  dlqAlertNotificationChannelsFlag,
+					Usage: "Stackdriver Notification Channels for high message count in dead-letter queue (Google only)",
 				},
 				cli.StringSliceFlag{
 					Name:  dlqAlertOKActionsFlag,
@@ -295,11 +341,11 @@ func runApp(args []string) error {
 				},
 				cli.StringFlag{
 					Name:  awsAccountIDFlag,
-					Usage: "AWS Account ID (AWS only)",
+					Usage: "AWS Account ID (AWS only) (required)",
 				},
 				cli.StringFlag{
 					Name:  awsRegionFlag,
-					Usage: "AWS Region (AWS only)",
+					Usage: "AWS Region (AWS only) (required)",
 				},
 			},
 			Action: generateModule,

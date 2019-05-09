@@ -1,0 +1,29 @@
+{
+    "pull_consumers": [
+        {
+            "queue": "dev-myapp",
+            "labels": {
+                "app": "myapp",
+                "env": "dev"
+            },
+            "subscriptions": [
+              "my-topic",
+              "my-topic2"
+            ]
+        },
+        {
+            "queue": "dev-secondapp",
+            "labels": {
+                "app": "secondapp",
+                "env": "dev"
+            },
+            "subscriptions": [
+              "my-topic2"
+            ]
+        }
+    ],
+    "topics": [
+        "my-topic",
+        "my-topic2"
+    ]
+}

@@ -14,16 +14,6 @@ import (
 )
 
 func argsForTestNoOptional(cloudProvider string, configFilepath string) []string {
-	return []string{
-		"./hedwig-terraform-generator",
-		fmt.Sprintf("--%s", cloudProviderFlag),
-		cloudProvider,
-		"generate",
-		configFilepath,
-	}
-}
-
-func argsForTest(cloudProvider string, configFilepath string) []string {
 	args := []string{
 		"./hedwig-terraform-generator",
 		fmt.Sprintf("--%s", cloudProviderFlag),
@@ -34,9 +24,28 @@ func argsForTest(cloudProvider string, configFilepath string) []string {
 	if cloudProvider == cloudProviderAWS {
 		args = append(
 			args,
-			"--alerting",
 			fmt.Sprintf(`--%s=12345`, awsAccountIDFlag),
 			fmt.Sprintf(`--%s=us-west-2`, awsRegionFlag),
+		)
+	} else if cloudProvider == cloudProviderGoogle {
+		args = append(
+			args,
+			fmt.Sprintf(`--%s=gs://myBucket/tmp`, googleDataFlowTmpGCSLocationFlag),
+			fmt.Sprintf(
+				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
+				googleDataFlowTemplateGCSPathFlag,
+			),
+		)
+	}
+	return args
+}
+
+func argsForTest(cloudProvider string, configFilepath string) []string {
+	args := argsForTestNoOptional(cloudProvider, configFilepath)
+	if cloudProvider == cloudProviderAWS {
+		args = append(
+			args,
+			"--alerting",
 			fmt.Sprintf(`--%s=pager_action`, queueAlertAlarmActionsFlag),
 			fmt.Sprintf(`--%s=pager_action2`, queueAlertAlarmActionsFlag),
 			fmt.Sprintf(`--%s=pager_action`, queueAlertOKActionsFlag),
@@ -49,11 +58,17 @@ func argsForTest(cloudProvider string, configFilepath string) []string {
 	} else if cloudProvider == cloudProviderGoogle {
 		args = append(
 			args,
-			fmt.Sprintf(`--%s=gs://myBucket/tmp`, googleDataFlowTmpGCSLocationFlag),
+			"--alerting",
 			fmt.Sprintf(
-				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
-				googleDataFlowTemplateGCSPathFlag,
+				`--%s=projects/myProject/notificationChannels/10357685029951383687`,
+				queueAlertNotificationChannelsFlag,
 			),
+			fmt.Sprintf(
+				`--%s=projects/myProject/notificationChannels/95138368710357685029`, queueAlertNotificationChannelsFlag),
+			fmt.Sprintf(
+				`--%s=projects/myProject/notificationChannels/10357685029951383687`, dlqAlertNotificationChannelsFlag),
+			fmt.Sprintf(
+				`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
 		)
 	}
 	return args
