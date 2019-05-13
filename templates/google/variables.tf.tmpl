@@ -11,3 +11,9 @@ variable "dataflow_template_gcs_path" {
   default = "{{ . }}"
 {{- end}}
 }
+
+variable "dataflow_zone" {
+{{with variables.DataFlowZone -}}
+  default = "{{ . }}"
+{{- end}}
+}

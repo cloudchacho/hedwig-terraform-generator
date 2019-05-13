@@ -23,6 +23,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 	variables := map[string]string{
 		"DataFlowTmpGCSLocation":  w.c.String(googleDataFlowTmpGCSLocationFlag),
 		"DataFlowTemplateGCSPath": w.c.String(googleDataFlowTemplateGCSPathFlag),
+		"DataFlowZone":            w.c.String(googleDataFlowZoneFlag),
 	}
 	files := []string{
 		queuesTmplFile,

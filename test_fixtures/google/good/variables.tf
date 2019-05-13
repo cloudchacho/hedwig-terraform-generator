@@ -8,3 +8,7 @@ variable "dataflow_tmp_gcs_location" {
 variable "dataflow_template_gcs_path" {
   default = "gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub"
 }
+
+variable "dataflow_zone" {
+  default = "us-west2-a"
+}

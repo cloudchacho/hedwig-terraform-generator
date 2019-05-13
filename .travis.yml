@@ -19,7 +19,7 @@ matrix:
 
 install:
 - GO111MODULE=off go get github.com/go-bindata/go-bindata/...
-- go-bindata -debug -prefix "templates/" templates/
+- go-bindata -prefix "templates/" templates/*
 - go get -mod=readonly -v ./...
 - go get -u github.com/client9/misspell/cmd/misspell
 - go get -u honnef.co/go/tools/cmd/staticcheck
@@ -29,7 +29,7 @@ before_script:
 - go vet
 - go mod verify
 - misspell -error -locale US *.go
-- staticcheck -checks all,-ST1003,-ST1005
+- staticcheck -checks all,-ST1003,-ST1005,-U1000
 - ./.travis.gofmt.sh
 
 script: make test
