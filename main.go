@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v2.2.0"
+	VERSION = "v2.3.0"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -32,7 +32,7 @@ const (
 	TFAWSTopicModuleVersion = "1.0.0"
 
 	// TFGoogleTopicModuleVersion represents the version of the Google hedwig-topic module
-	TFGoogleTopicModuleVersion = "1.0.0"
+	TFGoogleTopicModuleVersion = "1.1.0"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
 	TFGoogleQueueModuleVersion = "1.1.1"
@@ -66,14 +66,27 @@ const (
 	// dlqAlertOKActionsFlag represents the cli flag for DLQ alert actions on OK (AWS only)
 	dlqAlertOKActionsFlag = "dlq-alert-ok-actions"
 
-	// googleDataFlowTmpGCSLocationFlag represents the cli flag for Dataflow temporary GCS location (Google only)
-	googleDataFlowTmpGCSLocationFlag = "dataflow-tmp-gcs-location"
+	// dataflowTmpGCSLocationFlag represents the cli flag for Dataflow temporary GCS location (Google only)
+	dataflowTmpGCSLocationFlag = "dataflow-tmp-gcs-location"
 
-	// googleDataFlowTemplateGCSPathFlag represents the cli flag for Dataflow template GCS path (Google only)
-	googleDataFlowTemplateGCSPathFlag = "dataflow-template-gcs-path"
+	// dataflowPubSubToPubSubTemplateGCSPathFlag represents the cli flag for Dataflow template GCS path
+	// for pub sub to pub sub dataflow (Google only)
+	dataflowPubSubToPubSubTemplateGCSPathFlag = "dataflow-template-pubsub-to-pubsub-gcs-path"
 
-	// googleDataFlowZoneFlag represents the cli flag for Dataflow template GCS zone (Google only)
-	googleDataFlowZoneFlag = "dataflow-zone"
+	// dataflowPubSubToStorageGCSPathFlag represents the cli flag for Dataflow template GCS path
+	// for pub sub to Storage dataflow (Google only)
+	dataflowPubSubToStorageGCSPathFlag = "dataflow-template-pubsub-to-storage-gcs-path"
+
+	// googleDataflowZoneFlag represents the cli flag for Dataflow template GCS zone (Google only)
+	googleDataflowZoneFlag = "dataflow-zone"
+
+	// googleFirehoseDataflowOutputDirectoryFlag represents the cli flag for Firehose Dataflow output directory
+	// (Google only)
+	googleFirehoseDataflowOutputDirectoryFlag = "google-firehose-dataflow-output-dir"
+
+	// enableFirehoseAllMessages represents the cli flag to enable Google Firehose for all hedwig messages (Google only
+	// for now)
+	enableFirehoseAllMessages = "enable-firehose-all-messages"
 
 	// moduleFlag represents the cli flag for output module name
 	moduleFlag = "module"
@@ -99,9 +112,12 @@ var providerSpecificFlags = map[string][]string{
 	},
 	cloudProviderGoogle: {
 		dlqAlertNotificationChannelsFlag,
-		googleDataFlowTemplateGCSPathFlag,
-		googleDataFlowTmpGCSLocationFlag,
-		googleDataFlowZoneFlag,
+		dataflowPubSubToPubSubTemplateGCSPathFlag,
+		dataflowPubSubToStorageGCSPathFlag,
+		dataflowTmpGCSLocationFlag,
+		enableFirehoseAllMessages,
+		googleDataflowZoneFlag,
+		googleFirehoseDataflowOutputDirectoryFlag,
 		queueAlertNotificationChannelsFlag,
 	},
 }
@@ -112,8 +128,8 @@ var providerRequiredFlags = map[string][]string{
 		awsRegionFlag,
 	},
 	cloudProviderGoogle: {
-		googleDataFlowTemplateGCSPathFlag,
-		googleDataFlowTmpGCSLocationFlag,
+		dataflowPubSubToPubSubTemplateGCSPathFlag,
+		dataflowTmpGCSLocationFlag,
 	},
 }
 
@@ -336,15 +352,27 @@ func runApp(args []string) error {
 					Usage: "Cloudwatch Action ARNs for high message count in dead-letter queue when OK (AWS only)",
 				},
 				cli.StringFlag{
-					Name:  googleDataFlowTmpGCSLocationFlag,
+					Name:  dataflowTmpGCSLocationFlag,
 					Usage: "Dataflow tmp GCS location (Google only) (required)",
 				},
 				cli.StringFlag{
-					Name:  googleDataFlowTemplateGCSPathFlag,
-					Usage: "Dataflow template GCS location (Google only) (required)",
+					Name:  dataflowPubSubToPubSubTemplateGCSPathFlag,
+					Usage: "Dataflow template for pubsub to pubsub GCS location (Google only) (required)",
 				},
 				cli.StringFlag{
-					Name: googleDataFlowZoneFlag,
+					Name:  dataflowPubSubToStorageGCSPathFlag,
+					Usage: "Dataflow template for pubsub to storage GCS location (Google only) (required)",
+				},
+				cli.BoolFlag{
+					Name:  enableFirehoseAllMessages,
+					Usage: "Enable Google Firehose for all hedwig messages (Google only for now)",
+				},
+				cli.StringFlag{
+					Name:  googleFirehoseDataflowOutputDirectoryFlag,
+					Usage: "Google Firehose Dataflow output directory. Must end with /. (Google only)",
+				},
+				cli.StringFlag{
+					Name: googleDataflowZoneFlag,
 					Usage: "Dataflow zone (Google only) (required if zone isn't set at provider level, or " +
 						"isn't supported by Dataflow)",
 				},

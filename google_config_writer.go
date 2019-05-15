@@ -21,9 +21,14 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DLQAlertNotificationChannels":   w.c.StringSlice(dlqAlertNotificationChannelsFlag),
 	}
 	variables := map[string]string{
-		"DataFlowTmpGCSLocation":  w.c.String(googleDataFlowTmpGCSLocationFlag),
-		"DataFlowTemplateGCSPath": w.c.String(googleDataFlowTemplateGCSPathFlag),
-		"DataFlowZone":            w.c.String(googleDataFlowZoneFlag),
+		"DataflowTmpGCSLocation":                 w.c.String(dataflowTmpGCSLocationFlag),
+		"DataflowPubSubToPubSubTemplateGCSPath":  w.c.String(dataflowPubSubToPubSubTemplateGCSPathFlag),
+		"DataflowPubSubToStorageTemplateGCSPath": w.c.String(dataflowPubSubToStorageGCSPathFlag),
+		"DataflowZone":                           w.c.String(googleDataflowZoneFlag),
+		"DataflowOutputDirectory":                w.c.String(googleFirehoseDataflowOutputDirectoryFlag),
+	}
+	flags := map[string]bool{
+		"EnableFirehoseAllMessages": w.c.Bool(enableFirehoseAllMessages),
 	}
 	files := []string{
 		queuesTmplFile,
@@ -36,6 +41,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"generator_version": func() string { return VERSION },
 		"channels":          func() map[string][]string { return channels },
 		"variables":         func() map[string]string { return variables },
+		"flags":             func() map[string]bool { return flags },
 		"hclvalue":          hclvalue,
 		"hclident":          hclident,
 		"tfDoNotEditStamp":  func() string { return tfDoNotEditStamp },

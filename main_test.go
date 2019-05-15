@@ -30,10 +30,10 @@ func argsForTestNoOptional(cloudProvider string, configFilepath string) []string
 	} else if cloudProvider == cloudProviderGoogle {
 		args = append(
 			args,
-			fmt.Sprintf(`--%s=gs://myBucket/tmp`, googleDataFlowTmpGCSLocationFlag),
+			fmt.Sprintf(`--%s=gs://myBucket/tmp`, dataflowTmpGCSLocationFlag),
 			fmt.Sprintf(
 				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
-				googleDataFlowTemplateGCSPathFlag,
+				dataflowPubSubToPubSubTemplateGCSPathFlag,
 			),
 		)
 	}
@@ -69,7 +69,13 @@ func argsForTest(cloudProvider string, configFilepath string) []string {
 				`--%s=projects/myProject/notificationChannels/10357685029951383687`, dlqAlertNotificationChannelsFlag),
 			fmt.Sprintf(
 				`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
-			fmt.Sprintf(`--%s=us-west2-a`, googleDataFlowZoneFlag),
+			fmt.Sprintf(`--%s=us-west2-a`, googleDataflowZoneFlag),
+			fmt.Sprintf(
+				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_GCS_Text`,
+				dataflowPubSubToStorageGCSPathFlag,
+			),
+			fmt.Sprintf(`--%s=gs://myBucket/hedwigBackup/`, googleFirehoseDataflowOutputDirectoryFlag),
+			fmt.Sprintf(`--%s`, enableFirehoseAllMessages),
 		)
 	}
 	return args

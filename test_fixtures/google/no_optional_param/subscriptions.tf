@@ -9,7 +9,7 @@ module "sub-dev-myapp-my-topic" {
   topic = "${module.topic-my-topic.name}"
 
   dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_gcs_path}"
+  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
   dataflow_zone              = "${var.dataflow_zone}"
 
   labels = {
@@ -26,7 +26,7 @@ module "sub-dev-myapp-my-topic-2" {
   topic = "${module.topic-my-topic-2.name}"
 
   dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_gcs_path}"
+  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
   dataflow_zone              = "${var.dataflow_zone}"
 
   labels = {
@@ -43,7 +43,7 @@ module "sub-dev-secondapp-my-topic-2" {
   topic = "${module.topic-my-topic-2.name}"
 
   dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_gcs_path}"
+  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
   dataflow_zone              = "${var.dataflow_zone}"
 
   labels = {

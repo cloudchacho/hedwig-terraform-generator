@@ -6,6 +6,12 @@ module "topic-my-topic" {
   version = "~> {{TFGoogleTopicModuleVersion}}"
 
   topic = "my-topic"
+
+  enable_firehose_all_messages = "${var.enable_firehose_all_messages}"
+  dataflow_tmp_gcs_location    = "${var.dataflow_tmp_gcs_location}"
+  dataflow_template_gcs_path   = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
+  dataflow_zone                = "${var.dataflow_zone}"
+  dataflow_output_directory    = "${var.dataflow_output_directory}"
 }
 
 module "topic-my-topic-2" {
@@ -13,4 +19,10 @@ module "topic-my-topic-2" {
   version = "~> {{TFGoogleTopicModuleVersion}}"
 
   topic = "my-topic2"
+
+  enable_firehose_all_messages = "${var.enable_firehose_all_messages}"
+  dataflow_tmp_gcs_location    = "${var.dataflow_tmp_gcs_location}"
+  dataflow_template_gcs_path   = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
+  dataflow_zone                = "${var.dataflow_zone}"
+  dataflow_output_directory    = "${var.dataflow_output_directory}"
 }

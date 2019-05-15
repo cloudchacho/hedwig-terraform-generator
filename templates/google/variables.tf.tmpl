@@ -1,19 +1,35 @@
 {{ tfDoNotEditStamp }}
 
 variable "dataflow_tmp_gcs_location" {
-{{with variables.DataFlowTmpGCSLocation -}}
+{{with variables.DataflowTmpGCSLocation -}}
   default = "{{ . }}"
 {{- end}}
 }
 
-variable "dataflow_template_gcs_path" {
-{{with variables.DataFlowTemplateGCSPath -}}
+variable "dataflow_template_pubsub_to_pubsub_gcs_path" {
+{{with variables.DataflowPubSubToPubSubTemplateGCSPath -}}
+  default = "{{ . }}"
+{{- end}}
+}
+
+variable "dataflow_template_pubsub_to_storage_gcs_path" {
+{{with variables.DataflowPubSubToStorageTemplateGCSPath -}}
   default = "{{ . }}"
 {{- end}}
 }
 
 variable "dataflow_zone" {
-{{with variables.DataFlowZone -}}
+{{with variables.DataflowZone -}}
+  default = "{{ . }}"
+{{- end}}
+}
+
+variable "enable_firehose_all_messages" {
+  default = "{{ flags.EnableFirehoseAllMessages }}"
+}
+
+variable "dataflow_output_directory" {
+{{with variables.DataflowOutputDirectory -}}
   default = "{{ . }}"
 {{- end}}
 }
