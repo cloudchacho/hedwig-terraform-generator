@@ -22,5 +22,5 @@ variable "dataflow_output_directory" {
 }
 
 variable "enable_firehose_all_topics" {
-  default = "true"
+  default = "false"
 }

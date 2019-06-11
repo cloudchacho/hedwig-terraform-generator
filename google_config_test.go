@@ -28,7 +28,7 @@ func TestValidateSchemaFail(t *testing.T) {
 }
 `)
 	assert.EqualError(t, json.Unmarshal(schema, &GoogleConfig{}),
-		"json: cannot unmarshal string into Go struct field GoogleConfig.topics of type []string")
+		"json: cannot unmarshal string into Go struct field GoogleConfig.topics of type []*main.GoogleTopic")
 }
 
 func TestValidateTopic(t *testing.T) {
@@ -40,7 +40,7 @@ func TestValidateTopic(t *testing.T) {
 
 	config := GoogleConfig{}
 	for _, topic := range invalidTopics {
-		config.Topics = []string{topic}
+		config.Topics = []*GoogleTopic{{Name: topic}}
 		assert.EqualError(
 			t,
 			config.validate(),
@@ -87,7 +87,7 @@ func TestValidateSubscriptionLabel(t *testing.T) {
 		PullConsumers: []*GooglePullConsumer{
 			{Queue: "myapp", Subscriptions: []string{"topic"}, Labels: map[string]string{"UPPER": ""}},
 		},
-		Topics: []string{"topic"},
+		Topics: []*GoogleTopic{{Name: "topic"}},
 	}
 	assert.EqualError(
 		t,
@@ -99,7 +99,9 @@ func TestValidateSubscriptionLabel(t *testing.T) {
 func TestValidJSON(t *testing.T) {
 	var validConfig = []byte(`{
   "topics": [
-    "my-topic"
+	{
+      "name": "topic"
+	}
   ],
   "pull_consumers": [
     {
@@ -109,7 +111,7 @@ func TestValidJSON(t *testing.T) {
         "env": "dev"
       },
       "subscriptions": [
-        "my-topic"
+        "topic"
       ]
     }
   ]
@@ -119,14 +121,14 @@ func TestValidJSON(t *testing.T) {
 		PullConsumers: []*GooglePullConsumer{
 			{
 				"dev-myapp",
-				[]string{"my-topic"},
+				[]string{"topic"},
 				map[string]string{
 					"app": "myapp",
 					"env": "dev",
 				},
 			},
 		},
-		Topics: []string{"my-topic"},
+		Topics: []*GoogleTopic{{Name: "topic"}},
 	}
 
 	config := GoogleConfig{}

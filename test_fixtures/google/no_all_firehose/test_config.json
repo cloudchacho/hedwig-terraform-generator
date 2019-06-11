@@ -24,7 +24,8 @@
     ],
     "topics": [
         {
-            "name": "my-topic"
+            "name": "my-topic",
+            "enable_firehose": true
         },
         {
             "name": "my-topic2"

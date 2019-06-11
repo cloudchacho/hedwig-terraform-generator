@@ -9,10 +9,6 @@ module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
   queue = "{{ $consumer.Queue }}"
   topic = "${module.topic-{{hclident .}}.name}"
 
-  dataflow_tmp_gcs_location = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
-  dataflow_zone = "${var.dataflow_zone}"
-
   {{with $consumer.Labels -}}
   labels = {{hclvalue .}}
   {{- end}}

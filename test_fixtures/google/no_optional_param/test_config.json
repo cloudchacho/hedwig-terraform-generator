@@ -23,7 +23,11 @@
         }
     ],
     "topics": [
-        "my-topic",
-        "my-topic2"
+        {
+            "name": "my-topic"
+        },
+        {
+            "name": "my-topic2"
+        }
     ]
 }

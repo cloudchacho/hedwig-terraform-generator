@@ -1,14 +1,18 @@
 {{ tfDoNotEditStamp }}
 
-{{range .Topics -}}
-module "topic-{{hclident .}}" {
+{{range .Topics}}
+module "topic-{{hclident .Name}}" {
   source  = "standard-ai/hedwig-topic/google"
   version = "~> {{TFGoogleTopicModuleVersion}}"
 
-  topic = "{{.}}"
+  topic = "{{ .Name }}"
 
-  enable_firehose_all_messages = "${var.enable_firehose_all_messages}"
-  {{if flags.EnableFirehoseAllMessages -}}
+  {{if .EnableFirehose -}}
+    enable_firehose_all_messages = {{ .EnableFirehose }}
+  {{- else -}}
+    enable_firehose_all_messages = "${var.enable_firehose_all_topics}"
+  {{- end}}
+  {{if (or flags.EnableFirehoseAllTopics .EnableFirehose) -}}
       dataflow_tmp_gcs_location = "${var.dataflow_tmp_gcs_location}"
       dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
       dataflow_zone = "${var.dataflow_zone}"

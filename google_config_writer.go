@@ -27,8 +27,18 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DataflowZone":                           w.c.String(googleDataflowZoneFlag),
 		"DataflowOutputDirectory":                w.c.String(googleFirehoseDataflowOutputDirectoryFlag),
 	}
+	dataflowEnabled := w.c.Bool(enableFirehoseAllTopics)
+	if !dataflowEnabled {
+		for _, topic := range w.config.Topics {
+			if topic.EnableFirehose {
+				dataflowEnabled = true
+				break
+			}
+		}
+	}
 	flags := map[string]bool{
-		"EnableFirehoseAllMessages": w.c.Bool(enableFirehoseAllMessages),
+		"EnableFirehoseAllTopics": w.c.Bool(enableFirehoseAllTopics),
+		"DataflowEnabled":         dataflowEnabled,
 	}
 	files := []string{
 		queuesTmplFile,

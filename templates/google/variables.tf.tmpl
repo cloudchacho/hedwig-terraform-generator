@@ -1,5 +1,6 @@
 {{ tfDoNotEditStamp }}
 
+{{if flags.DataflowEnabled -}}
 variable "dataflow_tmp_gcs_location" {
 {{with variables.DataflowTmpGCSLocation -}}
   default = "{{ . }}"
@@ -24,12 +25,13 @@ variable "dataflow_zone" {
 {{- end}}
 }
 
-variable "enable_firehose_all_messages" {
-  default = "{{ flags.EnableFirehoseAllMessages }}"
-}
-
 variable "dataflow_output_directory" {
 {{with variables.DataflowOutputDirectory -}}
   default = "{{ . }}"
 {{- end}}
+}
+{{- end}}
+
+variable "enable_firehose_all_topics" {
+  default = "{{ flags.EnableFirehoseAllTopics }}"
 }

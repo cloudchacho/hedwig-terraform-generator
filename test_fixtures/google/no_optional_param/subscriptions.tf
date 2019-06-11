@@ -8,10 +8,6 @@ module "sub-dev-myapp-my-topic" {
   queue = "dev-myapp"
   topic = "${module.topic-my-topic.name}"
 
-  dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
-  dataflow_zone              = "${var.dataflow_zone}"
-
   labels = {
     app = "myapp"
     env = "dev"
@@ -25,10 +21,6 @@ module "sub-dev-myapp-my-topic-2" {
   queue = "dev-myapp"
   topic = "${module.topic-my-topic-2.name}"
 
-  dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
-  dataflow_zone              = "${var.dataflow_zone}"
-
   labels = {
     app = "myapp"
     env = "dev"
@@ -41,10 +33,6 @@ module "sub-dev-secondapp-my-topic-2" {
 
   queue = "dev-secondapp"
   topic = "${module.topic-my-topic-2.name}"
-
-  dataflow_tmp_gcs_location  = "${var.dataflow_tmp_gcs_location}"
-  dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_pubsub_gcs_path}"
-  dataflow_zone              = "${var.dataflow_zone}"
 
   labels = {
     app = "secondapp"

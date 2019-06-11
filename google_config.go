@@ -14,9 +14,15 @@ type GooglePullConsumer struct {
 	Labels        map[string]string `json:"labels"`
 }
 
+// GoogleTopic struct represents a Hedwig topic
+type GoogleTopic struct {
+	Name           string `json:"name"`
+	EnableFirehose bool   `json:"enable_firehose"`
+}
+
 // GoogleConfig struct represents the Hedwig configuration for Google Cloud
 type GoogleConfig struct {
-	Topics        []string              `json:"topics"`
+	Topics        []*GoogleTopic        `json:"topics"`
 	PullConsumers []*GooglePullConsumer `json:"pull_consumers,omitempty"`
 	// TODO
 	// PushConsumers  []*PushConsumer `json:"push_consumers,omitempty"`
@@ -50,8 +56,8 @@ var labelValueRegex = regexp.MustCompile("^[a-z0-9-_]*$")
 // Validates that topic names are valid format
 func (c *GoogleConfig) validateTopics() error {
 	for _, topic := range c.Topics {
-		if !googleTopicRegex.MatchString(topic) {
-			return fmt.Errorf("invalid topic name: |%s|, must match regex: %s", topic, googleTopicRegex)
+		if !googleTopicRegex.MatchString(topic.Name) {
+			return fmt.Errorf("invalid topic name: |%s|, must match regex: %s", topic.Name, googleTopicRegex)
 		}
 	}
 	return nil
@@ -73,7 +79,7 @@ func (c *GoogleConfig) validateQueueConsumers() error {
 			// verify that topic was declared
 			found := false
 			for _, topic := range c.Topics {
-				if topic == subscription {
+				if topic.Name == subscription {
 					found = true
 				}
 			}
