@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v3.0.0"
+	VERSION = "v3.0.1"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -127,10 +127,7 @@ var providerRequiredFlags = map[string][]string{
 		awsAccountIDFlag,
 		awsRegionFlag,
 	},
-	cloudProviderGoogle: {
-		dataflowPubSubToPubSubTemplateGCSPathFlag,
-		dataflowTmpGCSLocationFlag,
-	},
+	cloudProviderGoogle: {},
 }
 
 var providerAlertingFlags = map[string][]string{
@@ -356,15 +353,15 @@ func runApp(args []string) error {
 				},
 				cli.StringFlag{
 					Name:  dataflowTmpGCSLocationFlag,
-					Usage: "Dataflow tmp GCS location (Google only) (required)",
+					Usage: "Dataflow tmp GCS location (Google only) (required for firehose)",
 				},
 				cli.StringFlag{
 					Name:  dataflowPubSubToPubSubTemplateGCSPathFlag,
-					Usage: "Dataflow template for pubsub to pubsub GCS location (Google only) (required)",
+					Usage: "Dataflow template for pubsub to pubsub GCS location (Google only) (required for firehose)",
 				},
 				cli.StringFlag{
 					Name:  dataflowPubSubToStorageGCSPathFlag,
-					Usage: "Dataflow template for pubsub to storage GCS location (Google only) (required)",
+					Usage: "Dataflow template for pubsub to storage GCS location (Google only) (required for firehose)",
 				},
 				cli.BoolFlag{
 					Name:  enableFirehoseAllTopics,
@@ -376,8 +373,8 @@ func runApp(args []string) error {
 				},
 				cli.StringFlag{
 					Name: googleDataflowZoneFlag,
-					Usage: "Dataflow zone (Google only) (required if zone isn't set at provider level, or " +
-						"isn't supported by Dataflow)",
+					Usage: "Dataflow zone (Google only) (required for firehose if zone isn't set at provider level, " +
+						"or isn't supported by Dataflow)",
 				},
 				cli.StringFlag{
 					Name:  awsAccountIDFlag,

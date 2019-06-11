@@ -54,15 +54,6 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 			fmt.Sprintf(`--%s=12345`, awsAccountIDFlag),
 			fmt.Sprintf(`--%s=us-west-2`, awsRegionFlag),
 		)
-	} else if cloudProvider == cloudProviderGoogle {
-		args = append(
-			args,
-			fmt.Sprintf(`--%s=gs://myBucket/tmp`, dataflowTmpGCSLocationFlag),
-			fmt.Sprintf(
-				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
-				dataflowPubSubToPubSubTemplateGCSPathFlag,
-			),
-		)
 	}
 	if strings.Contains(testDir, "no_optional_param") {
 		return args
@@ -85,6 +76,11 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 		args = append(
 			args,
 			"--alerting",
+			fmt.Sprintf(`--%s=gs://myBucket/tmp`, dataflowTmpGCSLocationFlag),
+			fmt.Sprintf(
+				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
+				dataflowPubSubToPubSubTemplateGCSPathFlag,
+			),
 			fmt.Sprintf(
 				`--%s=projects/myProject/notificationChannels/10357685029951383687`,
 				queueAlertNotificationChannelsFlag,
