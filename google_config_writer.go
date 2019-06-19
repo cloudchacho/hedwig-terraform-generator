@@ -25,6 +25,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DataflowPubSubToPubSubTemplateGCSPath":  w.c.String(dataflowPubSubToPubSubTemplateGCSPathFlag),
 		"DataflowPubSubToStorageTemplateGCSPath": w.c.String(dataflowPubSubToStorageGCSPathFlag),
 		"DataflowZone":                           w.c.String(googleDataflowZoneFlag),
+		"DataflowRegion":                         w.c.String(googleDataflowRegionFlag),
 		"DataflowOutputDirectory":                w.c.String(googleFirehoseDataflowOutputDirectoryFlag),
 	}
 	dataflowEnabled := w.c.Bool(enableFirehoseAllTopics)

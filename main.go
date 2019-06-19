@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v3.0.3"
+	VERSION = "v3.1.0"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -32,7 +32,7 @@ const (
 	TFAWSTopicModuleVersion = "1.0.0"
 
 	// TFGoogleTopicModuleVersion represents the version of the Google hedwig-topic module
-	TFGoogleTopicModuleVersion = "1.1.4"
+	TFGoogleTopicModuleVersion = "1.2.0"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
 	TFGoogleQueueModuleVersion = "1.1.2"
@@ -80,6 +80,9 @@ const (
 	// googleDataflowZoneFlag represents the cli flag for Dataflow template GCS zone (Google only)
 	googleDataflowZoneFlag = "dataflow-zone"
 
+	// googleDataflowRegionFlag represents the cli flag for Dataflow template GCS region (Google only)
+	googleDataflowRegionFlag = "dataflow-region"
+
 	// googleFirehoseDataflowOutputDirectoryFlag represents the cli flag for Firehose Dataflow output directory
 	// (Google only)
 	googleFirehoseDataflowOutputDirectoryFlag = "google-firehose-dataflow-output-dir"
@@ -117,6 +120,7 @@ var providerSpecificFlags = map[string][]string{
 		dataflowTmpGCSLocationFlag,
 		enableFirehoseAllTopics,
 		googleDataflowZoneFlag,
+		googleDataflowRegionFlag,
 		googleFirehoseDataflowOutputDirectoryFlag,
 		queueAlertNotificationChannelsFlag,
 	},
@@ -373,8 +377,15 @@ func runApp(args []string) error {
 				},
 				cli.StringFlag{
 					Name: googleDataflowZoneFlag,
-					Usage: "Dataflow zone (Google only) (required for firehose if zone isn't set at provider level, " +
-						"or isn't supported by Dataflow)",
+					Usage: "Dataflow zone (Google only) (required for firehose if it's not set at the provider level, " +
+						"or that zone doesn't support Dataflow regional endpoints (see " +
+						"https://cloud.google.com/dataflow/docs/concepts/regional-endpoints)",
+				},
+				cli.StringFlag{
+					Name: googleDataflowRegionFlag,
+					Usage: "Dataflow zone (Google only) (required for firehose if it's not set at the provider level, " +
+						"or you want to use a region different from the zone (see " +
+						"https://cloud.google.com/dataflow/docs/concepts/regional-endpoints)",
 				},
 				cli.StringFlag{
 					Name:  awsAccountIDFlag,

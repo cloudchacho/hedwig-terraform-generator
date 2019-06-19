@@ -92,6 +92,7 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 			fmt.Sprintf(
 				`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
 			fmt.Sprintf(`--%s=us-west2-a`, googleDataflowZoneFlag),
+			fmt.Sprintf(`--%s=us-west2`, googleDataflowRegionFlag),
 			fmt.Sprintf(
 				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_GCS_Text`,
 				dataflowPubSubToStorageGCSPathFlag,

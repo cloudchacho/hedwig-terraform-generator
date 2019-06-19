@@ -16,6 +16,7 @@ module "topic-{{hclident .Name}}" {
       dataflow_tmp_gcs_location = "${var.dataflow_tmp_gcs_location}"
       dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
       dataflow_zone = "${var.dataflow_zone}"
+      dataflow_region = "${var.dataflow_region}"
       dataflow_output_directory = "${var.dataflow_output_directory}"
   {{- end}}
 }

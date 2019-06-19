@@ -17,6 +17,10 @@ variable "dataflow_zone" {
   default = "us-west2-a"
 }
 
+variable "dataflow_region" {
+  default = "us-west2"
+}
+
 variable "dataflow_output_directory" {
   default = "gs://myBucket/hedwigBackup/"
 }

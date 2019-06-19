@@ -25,6 +25,12 @@ variable "dataflow_zone" {
 {{- end}}
 }
 
+variable "dataflow_region" {
+{{with variables.DataflowRegion -}}
+  default = "{{ . }}"
+{{- end}}
+}
+
 variable "dataflow_output_directory" {
 {{with variables.DataflowOutputDirectory -}}
   default = "{{ . }}"
