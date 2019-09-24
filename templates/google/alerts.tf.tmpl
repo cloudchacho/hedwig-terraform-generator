@@ -1,0 +1,42 @@
+{{ tfDoNotEditStamp }}
+
+{{range $consumer := .PullConsumers -}}
+module "alerts-{{hclident $consumer.Queue}}" {
+  source  = "standard-ai/hedwig-alerts/google"
+  version = "~> {{TFGoogleAlertsModuleVersion}}"
+
+  subscription_name     = "${module.consumer-{{hclident $consumer.Queue}}.subscription_name}"
+  dlq_subscription_name = "${module.consumer-{{hclident $consumer.Queue}}.dlq_subscription_name}"
+
+  {{ with variables.GoogleProjectAlerting -}}
+  alerting_project = "${var.alerting_project}"
+  {{- end}}
+
+  {{with .Labels -}}
+  labels = {{hclvalue .}}
+  {{- end}}
+
+  queue_high_message_count_notification_channels = {{ hclvalue channels.QueueAlertNotificationChannels }}
+  dlq_high_message_count_notification_channels   = {{ hclvalue channels.DLQAlertNotificationChannels }}
+}
+
+{{range $consumer.Subscriptions -}}
+module "alerts-{{hclident $consumer.Queue}}-{{hclident .}}" {
+  source  = "standard-ai/hedwig-alerts/google"
+  version = "~> {{TFGoogleAlertsModuleVersion}}"
+
+  subscription_name = "${module.sub-{{hclident $consumer.Queue}}-{{hclident .}}.subscription_name}"
+
+  {{ with variables.GoogleProjectAlerting -}}
+  alerting_project = "${var.alerting_project}"
+  {{- end}}
+
+  {{with $consumer.Labels -}}
+  labels = {{hclvalue .}}
+  {{- end}}
+
+  queue_high_message_count_notification_channels = {{ hclvalue channels.QueueAlertNotificationChannels }}
+  dlq_high_message_count_notification_channels   = {{ hclvalue channels.DLQAlertNotificationChannels }}
+}
+{{- end}}
+{{- end}}

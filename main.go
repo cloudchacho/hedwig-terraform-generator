@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v3.1.0"
+	VERSION = "v3.2.0"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -32,10 +32,13 @@ const (
 	TFAWSTopicModuleVersion = "1.0.0"
 
 	// TFGoogleTopicModuleVersion represents the version of the Google hedwig-topic module
-	TFGoogleTopicModuleVersion = "1.2.0"
+	TFGoogleTopicModuleVersion = "1.2.1"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
-	TFGoogleQueueModuleVersion = "1.1.2"
+	TFGoogleQueueModuleVersion = "2.0.0"
+
+	// TFGoogleAlertsModuleVersion represents the version of the Google hedwig-alerts module
+	TFGoogleAlertsModuleVersion = "1.1.2"
 
 	// TFGoogleSubscriptionModuleVersion represents the version of the Google hedwig-subscription module
 	TFGoogleSubscriptionModuleVersion = "2.0.1"
@@ -87,6 +90,9 @@ const (
 	// (Google only)
 	googleFirehoseDataflowOutputDirectoryFlag = "google-firehose-dataflow-output-dir"
 
+	// googleProjectAlerting represents the cli flag that indicates the google project for alerting resources
+	googleProjectAlerting = "google-project-alerting"
+
 	// enableFirehoseAllTopics represents the cli flag to enable Google Firehose for all hedwig topics (Google only
 	// for now)
 	enableFirehoseAllTopics = "enable-firehose-all-topics"
@@ -122,6 +128,7 @@ var providerSpecificFlags = map[string][]string{
 		googleDataflowZoneFlag,
 		googleDataflowRegionFlag,
 		googleFirehoseDataflowOutputDirectoryFlag,
+		googleProjectAlerting,
 		queueAlertNotificationChannelsFlag,
 	},
 }
@@ -135,6 +142,20 @@ var providerRequiredFlags = map[string][]string{
 }
 
 var providerAlertingFlags = map[string][]string{
+	cloudProviderAWS: {
+		queueAlertAlarmActionsFlag,
+		queueAlertOKActionsFlag,
+		dlqAlertAlarmActionsFlag,
+		dlqAlertOKActionsFlag,
+	},
+	cloudProviderGoogle: {
+		queueAlertNotificationChannelsFlag,
+		dlqAlertNotificationChannelsFlag,
+		googleProjectAlerting,
+	},
+}
+
+var providerAlertingRequiredFlags = map[string][]string{
 	cloudProviderAWS: {
 		queueAlertAlarmActionsFlag,
 		queueAlertOKActionsFlag,
@@ -188,7 +209,7 @@ func validateArgs(c *cli.Context) *cli.ExitError {
 	// verify alerting flags are used correctly
 	alertingFlagsOkay := true
 	if c.Bool(alertingFlag) {
-		for _, f := range providerAlertingFlags[cloudProvider] {
+		for _, f := range providerAlertingRequiredFlags[cloudProvider] {
 			if !c.IsSet(f) {
 				alertingFlagsOkay = false
 				msg := fmt.Sprintf("--%s is required\n", f)
@@ -386,6 +407,11 @@ func runApp(args []string) error {
 					Usage: "Dataflow zone (Google only) (required for firehose if it's not set at the provider level, " +
 						"or you want to use a region different from the zone (see " +
 						"https://cloud.google.com/dataflow/docs/concepts/regional-endpoints)",
+				},
+				cli.StringFlag{
+					Name: googleProjectAlerting,
+					Usage: "Google project to use for alerting resources. This may be different from your main" +
+						"app environment (Google only)",
 				},
 				cli.StringFlag{
 					Name:  awsAccountIDFlag,

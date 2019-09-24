@@ -14,6 +14,8 @@ type awsConfigWriter struct {
 
 func (w *awsConfigWriter) shouldSkipFile(file string) bool {
 	switch file {
+	case alertsFile:
+		return true
 	case queuesFile:
 		return len(w.config.QueueConsumers) == 0
 	case variablesFile:

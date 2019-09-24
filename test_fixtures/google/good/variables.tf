@@ -28,3 +28,7 @@ variable "dataflow_output_directory" {
 variable "enable_firehose_all_topics" {
   default = "true"
 }
+
+variable "alerting_project" {
+  default = "alerting-project"
+}

@@ -55,53 +55,64 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 			fmt.Sprintf(`--%s=us-west-2`, awsRegionFlag),
 		)
 	}
-	if strings.Contains(testDir, "no_optional_param") {
+	if testDir == "no_optional_param" {
 		return args
 	}
 
 	if cloudProvider == cloudProviderAWS {
-		args = append(
-			args,
-			"--alerting",
-			fmt.Sprintf(`--%s=pager_action`, queueAlertAlarmActionsFlag),
-			fmt.Sprintf(`--%s=pager_action2`, queueAlertAlarmActionsFlag),
-			fmt.Sprintf(`--%s=pager_action`, queueAlertOKActionsFlag),
-			fmt.Sprintf(`--%s=pager_action2`, queueAlertOKActionsFlag),
-			fmt.Sprintf(`--%s=pager_action`, dlqAlertAlarmActionsFlag),
-			fmt.Sprintf(`--%s=pager_action2`, dlqAlertAlarmActionsFlag),
-			fmt.Sprintf(`--%s=pager_action`, dlqAlertOKActionsFlag),
-			fmt.Sprintf(`--%s=pager_action2`, dlqAlertOKActionsFlag),
-		)
-	} else if cloudProvider == cloudProviderGoogle {
-		args = append(
-			args,
-			"--alerting",
-			fmt.Sprintf(`--%s=gs://myBucket/tmp`, dataflowTmpGCSLocationFlag),
-			fmt.Sprintf(
-				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
-				dataflowPubSubToPubSubTemplateGCSPathFlag,
-			),
-			fmt.Sprintf(
-				`--%s=projects/myProject/notificationChannels/10357685029951383687`,
-				queueAlertNotificationChannelsFlag,
-			),
-			fmt.Sprintf(
-				`--%s=projects/myProject/notificationChannels/95138368710357685029`, queueAlertNotificationChannelsFlag),
-			fmt.Sprintf(
-				`--%s=projects/myProject/notificationChannels/10357685029951383687`, dlqAlertNotificationChannelsFlag),
-			fmt.Sprintf(
-				`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
-			fmt.Sprintf(`--%s=us-west2-a`, googleDataflowZoneFlag),
-			fmt.Sprintf(`--%s=us-west2`, googleDataflowRegionFlag),
-			fmt.Sprintf(
-				`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_GCS_Text`,
-				dataflowPubSubToStorageGCSPathFlag,
-			),
-			fmt.Sprintf(`--%s=gs://myBucket/hedwigBackup/`, googleFirehoseDataflowOutputDirectoryFlag),
-		)
-		if testDir != "no_all_firehose" {
+		if testDir == "good" {
 			args = append(
 				args,
+				"--alerting",
+				fmt.Sprintf(`--%s=pager_action`, queueAlertAlarmActionsFlag),
+				fmt.Sprintf(`--%s=pager_action2`, queueAlertAlarmActionsFlag),
+				fmt.Sprintf(`--%s=pager_action`, queueAlertOKActionsFlag),
+				fmt.Sprintf(`--%s=pager_action2`, queueAlertOKActionsFlag),
+				fmt.Sprintf(`--%s=pager_action`, dlqAlertAlarmActionsFlag),
+				fmt.Sprintf(`--%s=pager_action2`, dlqAlertAlarmActionsFlag),
+				fmt.Sprintf(`--%s=pager_action`, dlqAlertOKActionsFlag),
+				fmt.Sprintf(`--%s=pager_action2`, dlqAlertOKActionsFlag),
+			)
+		}
+	} else if cloudProvider == cloudProviderGoogle {
+		if testDir == "good" || testDir == "same_alerting_project" {
+			args = append(
+				args,
+				"--alerting",
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/10357685029951383687`,
+					queueAlertNotificationChannelsFlag,
+				),
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/95138368710357685029`, queueAlertNotificationChannelsFlag),
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/10357685029951383687`, dlqAlertNotificationChannelsFlag),
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
+			)
+		}
+		if testDir == "good" || testDir == "one_topic_firehose" {
+			args = append(
+				args,
+				fmt.Sprintf(
+					`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_Cloud_PubSub`,
+					dataflowPubSubToPubSubTemplateGCSPathFlag,
+				),
+				fmt.Sprintf(`--%s=us-west2-a`, googleDataflowZoneFlag),
+				fmt.Sprintf(`--%s=us-west2`, googleDataflowRegionFlag),
+				fmt.Sprintf(
+					`--%s=gs://dataflow-templates/2019-04-03-00/Cloud_PubSub_to_GCS_Text`,
+					dataflowPubSubToStorageGCSPathFlag,
+				),
+				fmt.Sprintf(`--%s=gs://myBucket/tmp`, dataflowTmpGCSLocationFlag),
+				fmt.Sprintf(`--%s=gs://myBucket/hedwigBackup/`, googleFirehoseDataflowOutputDirectoryFlag),
+			)
+		}
+		if testDir == "good" {
+			args = append(
+				args,
+				"--alerting",
+				fmt.Sprintf(`--%s=alerting-project`, googleProjectAlerting),
 				fmt.Sprintf(`--%s`, enableFirehoseAllTopics),
 			)
 		}
@@ -183,6 +194,8 @@ func TestGenerate(t *testing.T) {
 					expected, "{{TFGoogleTopicModuleVersion}}", TFGoogleTopicModuleVersion, -1)
 				expected = strings.Replace(
 					expected, "{{TFGoogleQueueModuleVersion}}", TFGoogleQueueModuleVersion, -1)
+				expected = strings.Replace(
+					expected, "{{TFGoogleAlertsModuleVersion}}", TFGoogleAlertsModuleVersion, -1)
 				expected = strings.Replace(
 					expected, "{{TFGoogleSubscriptionModuleVersion}}", TFGoogleSubscriptionModuleVersion, -1)
 				expected = strings.Replace(

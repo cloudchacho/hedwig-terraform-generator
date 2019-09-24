@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	alertsFile        = "alerts.tf"
 	queuesFile        = "queues.tf"
 	subscriptionsFile = "subscriptions.tf"
 	topicsFile        = "topics.tf"
@@ -17,6 +18,7 @@ const (
 )
 
 const (
+	alertsTmplFile        = "alerts.tf.tmpl"
 	queuesTmplFile        = "queues.tf.tmpl"
 	subscriptionsTmplFile = "subscriptions.tf.tmpl"
 	topicsTmplFile        = "topics.tf.tmpl"
@@ -51,7 +53,7 @@ func newConfigWriter(c *cli.Context, config interface{}) *configWriter {
 }
 
 func (w *configWriter) writeFiles(module string, templates *template.Template) error {
-	files := []string{queuesFile, subscriptionsFile, topicsFile, variablesFile}
+	files := []string{alertsFile, queuesFile, subscriptionsFile, topicsFile, variablesFile}
 
 	for _, file := range files {
 		if w.configWriterImpl.shouldSkipFile(file) {

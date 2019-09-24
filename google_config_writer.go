@@ -12,7 +12,12 @@ type googleConfigWriter struct {
 }
 
 func (w *googleConfigWriter) shouldSkipFile(file string) bool {
-	return false
+	switch file {
+	case alertsFile:
+		return !w.c.Bool(alertingFlag)
+	default:
+		return false
+	}
 }
 
 func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
@@ -27,6 +32,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DataflowZone":                           w.c.String(googleDataflowZoneFlag),
 		"DataflowRegion":                         w.c.String(googleDataflowRegionFlag),
 		"DataflowOutputDirectory":                w.c.String(googleFirehoseDataflowOutputDirectoryFlag),
+		"GoogleProjectAlerting":                  w.c.String(googleProjectAlerting),
 	}
 	dataflowEnabled := w.c.Bool(enableFirehoseAllTopics)
 	if !dataflowEnabled {
@@ -42,6 +48,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DataflowEnabled":         dataflowEnabled,
 	}
 	files := []string{
+		alertsTmplFile,
 		queuesTmplFile,
 		subscriptionsTmplFile,
 		topicsTmplFile,
@@ -60,6 +67,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 
 		"TFGoogleSubscriptionModuleVersion": func() string { return TFGoogleSubscriptionModuleVersion },
 		"TFGoogleTopicModuleVersion":        func() string { return TFGoogleTopicModuleVersion },
+		"TFGoogleAlertsModuleVersion":       func() string { return TFGoogleAlertsModuleVersion },
 		"TFGoogleQueueModuleVersion":        func() string { return TFGoogleQueueModuleVersion },
 	})
 

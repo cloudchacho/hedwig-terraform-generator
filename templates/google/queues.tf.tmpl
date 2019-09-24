@@ -6,17 +6,9 @@ module "consumer-{{hclident .Queue}}" {
   version = "~> {{TFGoogleQueueModuleVersion}}"
 
   queue          = "{{.Queue}}"
-  {{ with alerting -}}
-    alerting       = "true"
-  {{- end }}
 
   {{with .Labels -}}
   labels = {{hclvalue .}}
-  {{- end}}
-
-  {{if alerting -}}
-      queue_high_message_count_notification_channels = {{ hclvalue channels.QueueAlertNotificationChannels }}
-      dlq_high_message_count_notification_channels   = {{ hclvalue channels.DLQAlertNotificationChannels }}
   {{- end}}
 }
 {{- end}}
