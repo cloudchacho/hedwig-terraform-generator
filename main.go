@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v3.2.3"
+	VERSION = "v3.2.4"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -35,7 +35,7 @@ const (
 	TFGoogleTopicModuleVersion = "1.2.1"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
-	TFGoogleQueueModuleVersion = "2.0.0"
+	TFGoogleQueueModuleVersion = "2.0.1"
 
 	// TFGoogleAlertsModuleVersion represents the version of the Google hedwig-alerts module
 	TFGoogleAlertsModuleVersion = "1.1.2"
