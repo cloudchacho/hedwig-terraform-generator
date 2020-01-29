@@ -7,6 +7,14 @@ module "topic-{{hclident .Name}}" {
 
   topic = "{{ .Name }}"
 
+  {{with .ServiceAccounts -}}
+  iam_service_accounts = [
+      {{range . -}}
+        "{{.}}",
+      {{- end}}
+  ]
+  {{- end}}
+
   {{if .EnableFirehose -}}
     enable_firehose_all_messages = {{ .EnableFirehose }}
   {{- else -}}

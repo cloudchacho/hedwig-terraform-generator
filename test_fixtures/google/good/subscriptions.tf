@@ -8,6 +8,8 @@ module "sub-dev-myapp-my-topic" {
   queue = "dev-myapp"
   topic = "${module.topic-my-topic.name}"
 
+  iam_service_account = "myapp@project.iam.gserviceaccount.com"
+
   labels = {
     app = "myapp"
     env = "dev"
@@ -21,6 +23,8 @@ module "sub-dev-myapp-my-topic-2" {
   queue = "dev-myapp"
   topic = "${module.topic-my-topic-2.name}"
 
+  iam_service_account = "myapp@project.iam.gserviceaccount.com"
+
   labels = {
     app = "myapp"
     env = "dev"
@@ -33,6 +37,8 @@ module "sub-dev-secondapp-my-topic-2" {
 
   queue = "dev-secondapp"
   topic = "${module.topic-my-topic-2.name}"
+
+  iam_service_account = "secondapp@project.iam.gserviceaccount.com"
 
   labels = {
     app = "secondapp"

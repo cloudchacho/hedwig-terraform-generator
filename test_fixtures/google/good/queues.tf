@@ -7,6 +7,8 @@ module "consumer-dev-myapp" {
 
   queue = "dev-myapp"
 
+  iam_service_account = "myapp@project.iam.gserviceaccount.com"
+
   labels = {
     app = "myapp"
     env = "dev"
@@ -18,6 +20,8 @@ module "consumer-dev-secondapp" {
   version = "~> {{TFGoogleQueueModuleVersion}}"
 
   queue = "dev-secondapp"
+
+  iam_service_account = "secondapp@project.iam.gserviceaccount.com"
 
   labels = {
     app = "secondapp"

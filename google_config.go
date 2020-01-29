@@ -9,15 +9,17 @@ import (
 
 // GooglePullConsumer struct represents a Hedwig consumer app
 type GooglePullConsumer struct {
-	Queue         string            `json:"queue"`
-	Subscriptions []string          `json:"subscriptions"`
-	Labels        map[string]string `json:"labels"`
+	Queue          string            `json:"queue"`
+	Subscriptions  []string          `json:"subscriptions"`
+	ServiceAccount string            `json:"service_account"`
+	Labels         map[string]string `json:"labels"`
 }
 
 // GoogleTopic struct represents a Hedwig topic
 type GoogleTopic struct {
-	Name           string `json:"name"`
-	EnableFirehose bool   `json:"enable_firehose"`
+	Name            string   `json:"name"`
+	EnableFirehose  bool     `json:"enable_firehose"`
+	ServiceAccounts []string `json:"service_accounts"`
 }
 
 // GoogleConfig struct represents the Hedwig configuration for Google Cloud

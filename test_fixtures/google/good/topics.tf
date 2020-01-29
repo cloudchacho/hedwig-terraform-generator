@@ -7,6 +7,10 @@ module "topic-my-topic" {
 
   topic = "my-topic"
 
+  iam_service_accounts = [
+    "secondapp@project.iam.gserviceaccount.com",
+  ]
+
   enable_firehose_all_messages = "${var.enable_firehose_all_topics}"
   dataflow_tmp_gcs_location    = "${var.dataflow_tmp_gcs_location}"
   dataflow_template_gcs_path   = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
@@ -20,6 +24,11 @@ module "topic-my-topic-2" {
   version = "~> {{TFGoogleTopicModuleVersion}}"
 
   topic = "my-topic2"
+
+  iam_service_accounts = [
+    "thirdapp@project.iam.gserviceaccount.com",
+    "fourthapp@project.iam.gserviceaccount.com",
+  ]
 
   enable_firehose_all_messages = "${var.enable_firehose_all_topics}"
   dataflow_tmp_gcs_location    = "${var.dataflow_tmp_gcs_location}"

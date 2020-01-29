@@ -9,7 +9,8 @@
             "subscriptions": [
               "my-topic",
               "my-topic2"
-            ]
+            ],
+            "service_account": "myapp@project.iam.gserviceaccount.com"
         },
         {
             "queue": "dev-secondapp",
@@ -19,15 +20,23 @@
             },
             "subscriptions": [
               "my-topic2"
-            ]
+            ],
+            "service_account": "secondapp@project.iam.gserviceaccount.com"
         }
     ],
     "topics": [
         {
-            "name": "my-topic"
+            "name": "my-topic",
+            "service_accounts": [
+                "secondapp@project.iam.gserviceaccount.com"
+            ]
         },
         {
-            "name": "my-topic2"
+            "name": "my-topic2",
+            "service_accounts": [
+                "thirdapp@project.iam.gserviceaccount.com",
+                "fourthapp@project.iam.gserviceaccount.com"
+            ]
         }
     ]
 }

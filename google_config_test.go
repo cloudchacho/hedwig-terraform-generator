@@ -100,12 +100,16 @@ func TestValidJSON(t *testing.T) {
 	var validConfig = []byte(`{
   "topics": [
 	{
-      "name": "topic"
+      "name": "topic",
+      "service_accounts": [
+        "myapp@project.iam.gserviceaccount.com"
+      ]
 	}
   ],
   "pull_consumers": [
     {
       "queue": "dev-myapp",
+      "service_account": "myapp@project.iam.gserviceaccount.com",
       "labels": {
         "app": "myapp",
         "env": "dev"
@@ -122,13 +126,14 @@ func TestValidJSON(t *testing.T) {
 			{
 				"dev-myapp",
 				[]string{"topic"},
+				"myapp@project.iam.gserviceaccount.com",
 				map[string]string{
 					"app": "myapp",
 					"env": "dev",
 				},
 			},
 		},
-		Topics: []*GoogleTopic{{Name: "topic"}},
+		Topics: []*GoogleTopic{{"topic", false, []string{"myapp@project.iam.gserviceaccount.com"}}},
 	}
 
 	config := GoogleConfig{}
