@@ -32,7 +32,7 @@ module "topic-{{hclident .Name}}" {
     enable_alerts = var.enable_alerts
     dataflow_freshness_alert_notification_channels = {{ hclvalue channels.DataflowAlertNotificationChannels }}
     {{ with variables.GoogleProjectAlerting -}}
-    alerting_project = var.alerting_project
+      alerting_project = var.alerting_project
     {{- end}}
   {{- end}}
 }

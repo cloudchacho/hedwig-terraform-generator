@@ -170,6 +170,7 @@ var providerAlertingRequiredFlags = map[string][]string{
 	cloudProviderGoogle: {
 		queueAlertNotificationChannelsFlag,
 		dlqAlertNotificationChannelsFlag,
+		dataflowAlertNotificationChannelsFlag,
 	},
 }
 
