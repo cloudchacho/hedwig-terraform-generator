@@ -29,3 +29,8 @@ variable "enable_firehose_all_topics" {
   default = false
   type    = bool
 }
+
+variable "enable_alerts" {
+  default = false
+  type    = bool
+}

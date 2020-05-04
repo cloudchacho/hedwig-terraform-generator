@@ -30,6 +30,11 @@ variable "enable_firehose_all_topics" {
   type    = bool
 }
 
+variable "enable_alerts" {
+  default = true
+  type    = bool
+}
+
 variable "alerting_project" {
   default = "alerting-project"
 }

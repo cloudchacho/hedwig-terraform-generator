@@ -35,18 +35,19 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"DataflowOutputDirectory":                w.c.String(googleFirehoseDataflowOutputDirectoryFlag),
 		"GoogleProjectAlerting":                  w.c.String(googleProjectAlerting),
 	}
-	dataflowEnabled := w.c.Bool(enableFirehoseAllTopics)
-	if !dataflowEnabled {
+	enableDataflow := w.c.Bool(enableFirehoseAllTopics)
+	if !enableDataflow {
 		for _, topic := range w.config.Topics {
 			if topic.EnableFirehose {
-				dataflowEnabled = true
+				enableDataflow = true
 				break
 			}
 		}
 	}
 	flags := map[string]bool{
 		"EnableFirehoseAllTopics": w.c.Bool(enableFirehoseAllTopics),
-		"DataflowEnabled":         dataflowEnabled,
+		"EnableDataflow":          enableDataflow,
+		"EnableAlerting":          w.c.Bool(alertingFlag),
 	}
 	files := []string{
 		alertsTmplFile,
@@ -64,7 +65,6 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"hclvalue":          hclvalueV2,
 		"hclident":          hclident,
 		"tfDoNotEditStamp":  func() string { return tfDoNotEditStamp },
-		"alerting":          func() bool { return w.c.Bool(alertingFlag) },
 
 		"TFGoogleSubscriptionModuleVersion": func() string { return TFGoogleSubscriptionModuleVersion },
 		"TFGoogleTopicModuleVersion":        func() string { return TFGoogleTopicModuleVersion },

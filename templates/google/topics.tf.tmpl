@@ -27,6 +27,13 @@ module "topic-{{hclident .Name}}" {
       dataflow_region = var.dataflow_region
       dataflow_output_directory = var.dataflow_output_directory
   {{- end}}
+
+  {{with flags.EnableAlerting -}}
+    enable_alerts = var.enable_alerts
+      {{ with variables.GoogleProjectAlerting -}}
+      alerting_project = var.alerting_project
+      {{- end}}
+  {{- end}}
 }
 
 {{end}}

@@ -17,6 +17,9 @@ module "topic-my-topic" {
   dataflow_zone                = var.dataflow_zone
   dataflow_region              = var.dataflow_region
   dataflow_output_directory    = var.dataflow_output_directory
+
+  enable_alerts    = var.enable_alerts
+  alerting_project = var.alerting_project
 }
 
 module "topic-my-topic-2" {
@@ -35,4 +38,7 @@ module "topic-my-topic-2" {
   dataflow_zone                = var.dataflow_zone
   dataflow_region              = var.dataflow_region
   dataflow_output_directory    = var.dataflow_output_directory
+
+  enable_alerts    = var.enable_alerts
+  alerting_project = var.alerting_project
 }

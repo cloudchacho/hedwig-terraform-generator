@@ -8,6 +8,8 @@ module "topic-my-topic" {
   topic = "my-topic"
 
   enable_firehose_all_messages = var.enable_firehose_all_topics
+
+  enable_alerts = var.enable_alerts
 }
 
 module "topic-my-topic-2" {
@@ -17,4 +19,6 @@ module "topic-my-topic-2" {
   topic = "my-topic2"
 
   enable_firehose_all_messages = var.enable_firehose_all_topics
+
+  enable_alerts = var.enable_alerts
 }
