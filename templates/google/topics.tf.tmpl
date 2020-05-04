@@ -30,9 +30,10 @@ module "topic-{{hclident .Name}}" {
 
   {{with flags.EnableAlerting -}}
     enable_alerts = var.enable_alerts
-      {{ with variables.GoogleProjectAlerting -}}
-      alerting_project = var.alerting_project
-      {{- end}}
+    dataflow_freshness_alert_notification_channels = {{ hclvalue channels.DataflowAlertNotificationChannels }}
+    {{ with variables.GoogleProjectAlerting -}}
+    alerting_project = var.alerting_project
+    {{- end}}
   {{- end}}
 }
 

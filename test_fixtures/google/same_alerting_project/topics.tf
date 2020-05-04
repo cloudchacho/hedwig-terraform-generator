@@ -10,6 +10,10 @@ module "topic-my-topic" {
   enable_firehose_all_messages = var.enable_firehose_all_topics
 
   enable_alerts = var.enable_alerts
+  dataflow_freshness_alert_notification_channels = [
+    "projects/myProject/notificationChannels/10357685029951383687",
+    "projects/myProject/notificationChannels/95138368710357685029"
+  ]
 }
 
 module "topic-my-topic-2" {
@@ -21,4 +25,8 @@ module "topic-my-topic-2" {
   enable_firehose_all_messages = var.enable_firehose_all_topics
 
   enable_alerts = var.enable_alerts
+  dataflow_freshness_alert_notification_channels = [
+    "projects/myProject/notificationChannels/10357685029951383687",
+    "projects/myProject/notificationChannels/95138368710357685029"
+  ]
 }

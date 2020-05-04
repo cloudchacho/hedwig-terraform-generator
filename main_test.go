@@ -89,6 +89,10 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 					`--%s=projects/myProject/notificationChannels/10357685029951383687`, dlqAlertNotificationChannelsFlag),
 				fmt.Sprintf(
 					`--%s=projects/myProject/notificationChannels/95138368710357685029`, dlqAlertNotificationChannelsFlag),
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/10357685029951383687`, dataflowAlertNotificationChannelsFlag),
+				fmt.Sprintf(
+					`--%s=projects/myProject/notificationChannels/95138368710357685029`, dataflowAlertNotificationChannelsFlag),
 			)
 		}
 		if testDir == "good" || testDir == "one_topic_firehose" {

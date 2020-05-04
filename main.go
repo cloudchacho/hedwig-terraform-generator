@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v4.1.0"
+	VERSION = "v4.1.1"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -32,7 +32,7 @@ const (
 	TFAWSTopicModuleVersion = "1.0.0"
 
 	// TFGoogleTopicModuleVersion represents the version of the Google hedwig-topic module
-	TFGoogleTopicModuleVersion = "2.1.0"
+	TFGoogleTopicModuleVersion = "2.1.1"
 
 	// TFGoogleQueueModuleVersion represents the version of the Google hedwig-queue module
 	TFGoogleQueueModuleVersion = "3.0.0"
@@ -79,6 +79,10 @@ const (
 	// dataflowPubSubToStorageGCSPathFlag represents the cli flag for Dataflow template GCS path
 	// for pub sub to Storage dataflow (Google only)
 	dataflowPubSubToStorageGCSPathFlag = "dataflow-template-pubsub-to-storage-gcs-path"
+
+	// dataflowAlertNotificationChannelsFlag represents the cli flag for Dataflow freshness alert notification
+	// channels (Google only)
+	dataflowAlertNotificationChannelsFlag = "dataflow-alert-notification-channels"
 
 	// googleDataflowZoneFlag represents the cli flag for Dataflow template GCS zone (Google only)
 	googleDataflowZoneFlag = "dataflow-zone"
@@ -151,6 +155,7 @@ var providerAlertingFlags = map[string][]string{
 	cloudProviderGoogle: {
 		queueAlertNotificationChannelsFlag,
 		dlqAlertNotificationChannelsFlag,
+		dataflowAlertNotificationChannelsFlag,
 		googleProjectAlerting,
 	},
 }
@@ -391,6 +396,10 @@ func runApp(args []string) error {
 				cli.StringFlag{
 					Name:  dataflowPubSubToStorageGCSPathFlag,
 					Usage: "Dataflow template for pubsub to storage GCS location (Google only) (required for firehose)",
+				},
+				cli.StringSliceFlag{
+					Name:  dataflowAlertNotificationChannelsFlag,
+					Usage: "Dataflow freshness alert notification channels (Google only)",
 				},
 				cli.BoolFlag{
 					Name:  enableFirehoseAllTopics,

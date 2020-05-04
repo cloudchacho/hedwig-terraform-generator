@@ -18,7 +18,11 @@ module "topic-my-topic" {
   dataflow_region              = var.dataflow_region
   dataflow_output_directory    = var.dataflow_output_directory
 
-  enable_alerts    = var.enable_alerts
+  enable_alerts = var.enable_alerts
+  dataflow_freshness_alert_notification_channels = [
+    "projects/myProject/notificationChannels/10357685029951383687",
+    "projects/myProject/notificationChannels/95138368710357685029"
+  ]
   alerting_project = var.alerting_project
 }
 
@@ -39,6 +43,10 @@ module "topic-my-topic-2" {
   dataflow_region              = var.dataflow_region
   dataflow_output_directory    = var.dataflow_output_directory
 
-  enable_alerts    = var.enable_alerts
+  enable_alerts = var.enable_alerts
+  dataflow_freshness_alert_notification_channels = [
+    "projects/myProject/notificationChannels/10357685029951383687",
+    "projects/myProject/notificationChannels/95138368710357685029"
+  ]
   alerting_project = var.alerting_project
 }

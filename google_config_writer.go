@@ -23,8 +23,9 @@ func (w *googleConfigWriter) shouldSkipFile(file string) bool {
 
 func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 	channels := map[string][]string{
-		"QueueAlertNotificationChannels": w.c.StringSlice(queueAlertNotificationChannelsFlag),
-		"DLQAlertNotificationChannels":   w.c.StringSlice(dlqAlertNotificationChannelsFlag),
+		"QueueAlertNotificationChannels":    w.c.StringSlice(queueAlertNotificationChannelsFlag),
+		"DLQAlertNotificationChannels":      w.c.StringSlice(dlqAlertNotificationChannelsFlag),
+		"DataflowAlertNotificationChannels": w.c.StringSlice(dataflowAlertNotificationChannelsFlag),
 	}
 	variables := map[string]string{
 		"DataflowTmpGCSLocation":                 w.c.String(dataflowTmpGCSLocationFlag),
