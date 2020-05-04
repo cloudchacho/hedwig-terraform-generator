@@ -5,8 +5,8 @@ module "alerts-dev-myapp" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name     = "${module.consumer-dev-myapp.subscription_name}"
-  dlq_subscription_name = "${module.consumer-dev-myapp.dlq_subscription_name}"
+  subscription_name     = module.consumer-dev-myapp.subscription_name
+  dlq_subscription_name = module.consumer-dev-myapp.dlq_subscription_name
 
   labels = {
     app = "myapp"
@@ -15,12 +15,11 @@ module "alerts-dev-myapp" {
 
   queue_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
-
   dlq_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
 }
 
@@ -28,7 +27,7 @@ module "alerts-dev-myapp-my-topic" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name = "${module.sub-dev-myapp-my-topic.subscription_name}"
+  subscription_name = module.sub-dev-myapp-my-topic.subscription_name
 
   labels = {
     app = "myapp"
@@ -37,12 +36,11 @@ module "alerts-dev-myapp-my-topic" {
 
   queue_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
-
   dlq_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
 }
 
@@ -50,7 +48,7 @@ module "alerts-dev-myapp-my-topic-2" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name = "${module.sub-dev-myapp-my-topic-2.subscription_name}"
+  subscription_name = module.sub-dev-myapp-my-topic-2.subscription_name
 
   labels = {
     app = "myapp"
@@ -59,12 +57,11 @@ module "alerts-dev-myapp-my-topic-2" {
 
   queue_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
-
   dlq_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
 }
 
@@ -72,8 +69,8 @@ module "alerts-dev-secondapp" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name     = "${module.consumer-dev-secondapp.subscription_name}"
-  dlq_subscription_name = "${module.consumer-dev-secondapp.dlq_subscription_name}"
+  subscription_name     = module.consumer-dev-secondapp.subscription_name
+  dlq_subscription_name = module.consumer-dev-secondapp.dlq_subscription_name
 
   labels = {
     app = "secondapp"
@@ -82,12 +79,11 @@ module "alerts-dev-secondapp" {
 
   queue_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
-
   dlq_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
 }
 
@@ -95,7 +91,7 @@ module "alerts-dev-secondapp-my-topic-2" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name = "${module.sub-dev-secondapp-my-topic-2.subscription_name}"
+  subscription_name = module.sub-dev-secondapp-my-topic-2.subscription_name
 
   labels = {
     app = "secondapp"
@@ -104,11 +100,10 @@ module "alerts-dev-secondapp-my-topic-2" {
 
   queue_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
-
   dlq_high_message_count_notification_channels = [
     "projects/myProject/notificationChannels/10357685029951383687",
-    "projects/myProject/notificationChannels/95138368710357685029",
+    "projects/myProject/notificationChannels/95138368710357685029"
   ]
 }

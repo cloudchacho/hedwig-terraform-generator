@@ -2,23 +2,45 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
+	"sort"
+	"strconv"
 	"strings"
 
-	"strconv"
-
-	"fmt"
-
-	"reflect"
-
-	"sort"
-
 	"github.com/hashicorp/hcl/hcl/printer"
+	"github.com/hashicorp/hcl/v2/hclwrite"
 	"github.com/huandu/xstrings"
 	"github.com/pkg/errors"
 )
+
+// Formats a Terraform file with hcl v2 format
+func hclFmtV2(filename string) error {
+	src, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	res := hclwrite.Format(src)
+
+	// formatter writes multiple new lines for some reason
+	for bytes.Index(res, []byte("\n\n\n")) != -1 {
+		res = bytes.ReplaceAll(res, []byte("\n\n\n"), []byte("\n\n"))
+	}
+	for bytes.Index(res, []byte("\n\n}")) != -1 {
+		res = bytes.ReplaceAll(res, []byte("\n\n}"), []byte("\n}"))
+	}
+	res = append(bytes.TrimSpace(res), byte('\n'))
+
+	if bytes.Equal(src, res) {
+		return nil
+	}
+
+	return ioutil.WriteFile(filename, res, os.ModePerm)
+}
 
 // Formats a Terraform file with hclfmt
 func hclFmt(filename string) error {
@@ -39,6 +61,23 @@ func hclFmt(filename string) error {
 	return ioutil.WriteFile(filename, res, os.ModePerm)
 }
 
+// Formats all Terraform files with hcl v2 format
+func hclFmtDirV2(module string) error {
+	moduleInfo, err := ioutil.ReadDir(module)
+	if err != nil {
+		return err
+	}
+	for _, file := range moduleInfo {
+		if filepath.Ext(file.Name()) != ".tf" {
+			continue
+		}
+		if err := hclFmtV2(filepath.Join(module, file.Name())); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Formats all Terraform files with hclfmt
 func hclFmtDir(module string) error {
 	moduleInfo, err := ioutil.ReadDir(module)
@@ -54,6 +93,29 @@ func hclFmtDir(module string) error {
 		}
 	}
 	return nil
+}
+
+// Converts an object of any type into hcl v2 value. Handles arbitrarily nested maps and lists
+func hclvalueV2(v interface{}) string {
+	rv, ok := v.(reflect.Value)
+	if !ok {
+		rv = reflect.ValueOf(v)
+	}
+	switch rv.Kind() {
+	case reflect.Bool:
+		if rv.Bool() {
+			return `true`
+		} else {
+			return `false`
+		}
+	case reflect.String:
+		rvStr := rv.String()
+		// tf 12 syntax
+		if strings.HasPrefix(rvStr, "${") && strings.HasSuffix(rvStr, "}") {
+			return strings.TrimSuffix(strings.TrimPrefix(rvStr, "${"), "}")
+		}
+	}
+	return hclvalue(v)
 }
 
 // Converts an object of any type into hcl value. Handles arbitrarily nested maps and lists
@@ -92,7 +154,12 @@ func hclvalue(v interface{}) string {
 	case reflect.Ptr, reflect.Interface:
 		return hclvalue(rv.Elem())
 	case reflect.String:
-		return strconv.Quote(rv.String())
+		rvStr := rv.String()
+		// tf 12 syntax
+		if strings.HasPrefix(rvStr, "${") && strings.HasSuffix(rvStr, "}") {
+			return strings.TrimSuffix(strings.TrimPrefix(rvStr, "${"), "}")
+		}
+		return strconv.Quote(rvStr)
 	}
 }
 

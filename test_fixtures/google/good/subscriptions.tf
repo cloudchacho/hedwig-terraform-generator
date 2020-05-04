@@ -6,7 +6,7 @@ module "sub-dev-myapp-my-topic" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-myapp"
-  topic = "${module.topic-my-topic.name}"
+  topic = module.topic-my-topic.name
 
   iam_service_account = "myapp@project.iam.gserviceaccount.com"
 
@@ -21,7 +21,7 @@ module "sub-dev-myapp-my-topic-2" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-myapp"
-  topic = "${module.topic-my-topic-2.name}"
+  topic = module.topic-my-topic-2.name
 
   iam_service_account = "myapp@project.iam.gserviceaccount.com"
 
@@ -36,7 +36,7 @@ module "sub-dev-secondapp-my-topic-2" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-secondapp"
-  topic = "${module.topic-my-topic-2.name}"
+  topic = module.topic-my-topic-2.name
 
   iam_service_account = "secondapp@project.iam.gserviceaccount.com"
 

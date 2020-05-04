@@ -1,6 +1,6 @@
 {{ tfDoNotEditStamp }}
 
-{{range .Topics}}
+{{range .Topics -}}
 module "topic-{{hclident .Name}}" {
   source  = "standard-ai/hedwig-topic/google"
   version = "~> {{TFGoogleTopicModuleVersion}}"
@@ -10,22 +10,23 @@ module "topic-{{hclident .Name}}" {
   {{with .ServiceAccounts -}}
   iam_service_accounts = [
       {{range . -}}
-        "{{.}}",
+        {{hclvalue .}},
       {{- end}}
   ]
   {{- end}}
 
   {{if .EnableFirehose -}}
-    enable_firehose_all_messages = {{ .EnableFirehose }}
+    enable_firehose_all_messages = {{ hclvalue .EnableFirehose }}
   {{- else -}}
-    enable_firehose_all_messages = "${var.enable_firehose_all_topics}"
+    enable_firehose_all_messages = var.enable_firehose_all_topics
   {{- end}}
   {{if (or flags.EnableFirehoseAllTopics .EnableFirehose) -}}
-      dataflow_tmp_gcs_location = "${var.dataflow_tmp_gcs_location}"
-      dataflow_template_gcs_path = "${var.dataflow_template_pubsub_to_storage_gcs_path}"
-      dataflow_zone = "${var.dataflow_zone}"
-      dataflow_region = "${var.dataflow_region}"
-      dataflow_output_directory = "${var.dataflow_output_directory}"
+      dataflow_tmp_gcs_location = var.dataflow_tmp_gcs_location
+      dataflow_template_gcs_path = var.dataflow_template_pubsub_to_storage_gcs_path
+      dataflow_zone = var.dataflow_zone
+      dataflow_region = var.dataflow_region
+      dataflow_output_directory = var.dataflow_output_directory
   {{- end}}
 }
-{{- end}}
+
+{{end}}

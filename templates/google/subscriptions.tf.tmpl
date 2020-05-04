@@ -7,15 +7,16 @@ module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "{{ $consumer.Queue }}"
-  topic = "${module.topic-{{hclident .}}.name}"
+  topic = module.topic-{{hclident .}}.name
 
   {{with $consumer.ServiceAccount -}}
-  iam_service_account = "{{.}}"
+  iam_service_account = {{hclvalue .}}
   {{- end}}
 
   {{with $consumer.Labels -}}
   labels = {{hclvalue .}}
   {{- end}}
 }
-{{- end}}
+
+{{end}}
 {{- end}}

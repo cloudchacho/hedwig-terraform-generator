@@ -20,9 +20,31 @@ variable "aws_account_id" {
 	require.NoError(t, ioutil.WriteFile(filename, contents, os.ModePerm))
 	defer os.Remove(filename)
 
-	hclFmt(filename)
+	err := hclFmt(filename)
+	require.NoError(t, err)
 
-	contents, err := ioutil.ReadFile(filename)
+	contents, err = ioutil.ReadFile(filename)
+	require.NoError(t, err)
+
+	assert.Equal(t, string(goodContents), string(contents))
+}
+
+func TestHclFmtV2(t *testing.T) {
+	contents := []byte(`
+variable "aws_account_id" {
+}
+`)
+	goodContents := []byte(`variable "aws_account_id" {
+}
+`)
+	filename := "bad_hcl.tf"
+	require.NoError(t, ioutil.WriteFile(filename, contents, os.ModePerm))
+	defer os.Remove(filename)
+
+	err := hclFmtV2(filename)
+	require.NoError(t, err)
+
+	contents, err = ioutil.ReadFile(filename)
 	require.NoError(t, err)
 
 	assert.Equal(t, string(goodContents), string(contents))
@@ -39,9 +61,29 @@ variable "aws_account_id" {
 	require.NoError(t, ioutil.WriteFile(filename, contents, os.ModePerm))
 	defer os.Remove(filename)
 
-	hclFmtDir(".")
+	err := hclFmtDir(".")
 
-	contents, err := ioutil.ReadFile(filename)
+	contents, err = ioutil.ReadFile(filename)
+	require.NoError(t, err)
+
+	assert.Equal(t, string(goodContents), string(contents))
+}
+
+func TestHclFmtDirV2(t *testing.T) {
+	contents := []byte(`
+variable "aws_account_id" {
+}
+`)
+	goodContents := []byte(`variable "aws_account_id" {
+}
+`)
+	filename := "bad_hcl.tf"
+	require.NoError(t, ioutil.WriteFile(filename, contents, os.ModePerm))
+	defer os.Remove(filename)
+
+	err := hclFmtDirV2(".")
+
+	contents, err = ioutil.ReadFile(filename)
 	require.NoError(t, err)
 
 	assert.Equal(t, string(goodContents), string(contents))

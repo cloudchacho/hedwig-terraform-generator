@@ -8,11 +8,12 @@ module "consumer-{{hclident .Queue}}" {
   queue          = "{{.Queue}}"
 
   {{with .ServiceAccount -}}
-  iam_service_account = "{{.}}"
+  iam_service_account = {{hclvalue .}}
   {{- end}}
 
   {{with .Labels -}}
   labels = {{hclvalue .}}
   {{- end}}
 }
-{{- end}}
+
+{{end}}

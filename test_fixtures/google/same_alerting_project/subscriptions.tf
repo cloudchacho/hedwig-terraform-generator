@@ -6,7 +6,7 @@ module "sub-dev-myapp-my-topic" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-myapp"
-  topic = "${module.topic-my-topic.name}"
+  topic = module.topic-my-topic.name
 
   labels = {
     app = "myapp"
@@ -19,7 +19,7 @@ module "sub-dev-myapp-my-topic-2" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-myapp"
-  topic = "${module.topic-my-topic-2.name}"
+  topic = module.topic-my-topic-2.name
 
   labels = {
     app = "myapp"
@@ -32,7 +32,7 @@ module "sub-dev-secondapp-my-topic-2" {
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "dev-secondapp"
-  topic = "${module.topic-my-topic-2.name}"
+  topic = module.topic-my-topic-2.name
 
   labels = {
     app = "secondapp"

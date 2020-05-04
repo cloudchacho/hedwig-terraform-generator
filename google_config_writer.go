@@ -1,9 +1,10 @@
 package main
 
 import (
-	"gopkg.in/urfave/cli.v1"
 	"path/filepath"
 	"text/template"
+
+	"gopkg.in/urfave/cli.v1"
 )
 
 type googleConfigWriter struct {
@@ -60,7 +61,7 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 		"channels":          func() map[string][]string { return channels },
 		"variables":         func() map[string]string { return variables },
 		"flags":             func() map[string]bool { return flags },
-		"hclvalue":          hclvalue,
+		"hclvalue":          hclvalueV2,
 		"hclident":          hclident,
 		"tfDoNotEditStamp":  func() string { return tfDoNotEditStamp },
 		"alerting":          func() bool { return w.c.Bool(alertingFlag) },

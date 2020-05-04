@@ -2,6 +2,7 @@ module github.com/standard-ai/hedwig-terraform-generator
 
 require (
 	github.com/hashicorp/hcl v1.0.0
+	github.com/hashicorp/hcl/v2 v2.4.0
 	github.com/huandu/xstrings v1.2.0
 	github.com/pkg/errors v0.8.1
 	github.com/sergi/go-diff v1.0.0

@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
-	"gopkg.in/urfave/cli.v1"
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/pkg/errors"
+	"gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -100,8 +101,16 @@ func (w *configWriter) writeTerraform() error {
 		return err
 	}
 
-	if err := hclFmtDir(module); err != nil {
-		return err
+	if _, ok := w.configWriterImpl.(*awsConfigWriter); ok {
+		if err := hclFmtDir(module); err != nil {
+			return err
+		}
+	} else if _, ok := w.configWriterImpl.(*googleConfigWriter); ok {
+		if err := hclFmtDirV2(module); err != nil {
+			return err
+		}
+	} else {
+		return nil
 	}
 
 	return nil
