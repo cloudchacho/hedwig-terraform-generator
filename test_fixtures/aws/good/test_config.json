@@ -19,7 +19,13 @@
             },
             "subscriptions": [
               "my-topic2"
-            ]
+            ],
+            "cross_project_subscriptions": [
+            {
+                "account_id": "54321",
+                "topic": "my-topic2"
+            }
+        ]
         }
     ],
     "lambda_consumers": [

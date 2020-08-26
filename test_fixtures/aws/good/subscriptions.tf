@@ -25,6 +25,14 @@ module "sub-dev-secondapp-my-topic-2" {
   topic = "${module.topic-my-topic-2.arn}"
 }
 
+module "sub-dev-secondapp-54321-my-topic-2" {
+  source  = "Automatic/hedwig-queue-subscription/aws"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
+
+  queue = "${module.consumer-dev-secondapp.queue_arn}"
+  topic = "arn:aws:sns:${var.aws_region}:54321:hedwig-my-topic2"
+}
+
 module "sub-my-function-my-topic" {
   source  = "Automatic/hedwig-lambda-subscription/aws"
   version = "~> {{TFAWSLambdaSubscriptionModuleVersion}}"

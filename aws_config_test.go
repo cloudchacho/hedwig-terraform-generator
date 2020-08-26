@@ -105,6 +105,12 @@ func TestValidAWSJSON(t *testing.T) {
       },
       "subscriptions": [
         "my-topic"
+      ],
+      "cross_project_subscriptions": [
+        {
+          "account_id": "54321",
+          "topic": "my-topic"
+        }
       ]
     }
   ],
@@ -127,6 +133,7 @@ func TestValidAWSJSON(t *testing.T) {
 					"Env": "dev",
 				},
 				[]string{"my-topic"},
+				[]AWSCrossProjectSubscription{{"54321", "my-topic"}},
 			},
 		},
 		LambdaConsumers: []*AWSLambdaConsumer{
@@ -171,6 +178,7 @@ func TestValidJSONNoLambda(t *testing.T) {
 					"Env": "dev",
 				},
 				[]string{"my-topic"},
+				nil,
 			},
 		},
 		Topics: []string{"my-topic"},

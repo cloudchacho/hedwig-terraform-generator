@@ -45,3 +45,18 @@ module "sub-dev-secondapp-my-topic-2" {
     env = "dev"
   }
 }
+
+module "sub-dev-secondapp-other-project-my-topic-2" {
+  source  = "standard-ai/hedwig-subscription/google"
+  version = "~> {{TFGoogleSubscriptionModuleVersion}}"
+
+  queue = "dev-secondapp"
+  topic = "projects/other-project/topics/hedwig-my-topic2"
+
+  iam_service_account = "secondapp@project.iam.gserviceaccount.com"
+
+  labels = {
+    app = "secondapp"
+    env = "dev"
+  }
+}

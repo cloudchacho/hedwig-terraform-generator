@@ -8,11 +8,18 @@ import (
 	"strings"
 )
 
+// AWSCrossProjectSubscription struct represents a cross-project subscription for a Hedwig consumer app
+type AWSCrossProjectSubscription struct {
+	AccountID string `json:"account_id"`
+	Topic     string `json:"topic"`
+}
+
 // AWSQueueConsumer struct represents a Hedwig consumer app
 type AWSQueueConsumer struct {
-	Queue         string            `json:"queue"`
-	Tags          map[string]string `json:"tags"`
-	Subscriptions []string          `json:"subscriptions"`
+	Queue                     string                        `json:"queue"`
+	Tags                      map[string]string             `json:"tags"`
+	Subscriptions             []string                      `json:"subscriptions"`
+	CrossProjectSubscriptions []AWSCrossProjectSubscription `json:"cross_project_subscriptions"`
 }
 
 // AWSLambdaConsumer struct represents a Hedwig subscription for a lambda app
@@ -103,7 +110,7 @@ func (c *AWSConfig) validateQueueConsumers() error {
 			return fmt.Errorf("invalid queue name, must only contain: [A-Z], [0-9], [-]: '%s'", consumer.Queue)
 		}
 
-		if len(consumer.Subscriptions) == 0 {
+		if len(consumer.Subscriptions) == 0 && len(consumer.CrossProjectSubscriptions) == 0 {
 			return fmt.Errorf("consumer must contain at least one subscription: '%s'", consumer.Queue)
 		}
 

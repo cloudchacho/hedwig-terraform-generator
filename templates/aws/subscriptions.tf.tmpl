@@ -10,6 +10,16 @@ module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
   topic = "${module.topic-{{hclident .}}.arn}"
 }
 {{- end}}
+
+{{range $consumer.CrossProjectSubscriptions -}}
+module "sub-{{hclident $consumer.Queue}}-{{hclident .AccountID}}-{{hclident .Topic}}" {
+  source  = "Automatic/hedwig-queue-subscription/aws"
+  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
+
+  queue = "${module.consumer-{{hclident $consumer.Queue}}.queue_arn}"
+  topic = "arn:aws:sns:${var.aws_region}:{{ .AccountID }}:hedwig-{{ .Topic }}"
+}
+{{- end}}
 {{- end}}
 
 {{range $consumer := .LambdaConsumers -}}

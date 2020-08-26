@@ -19,4 +19,22 @@ module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
 }
 
 {{end}}
+{{range $consumer.CrossProjectSubscriptions -}}
+module "sub-{{hclident $consumer.Queue}}-{{hclident .Project}}-{{hclident .Topic}}" {
+  source  = "standard-ai/hedwig-subscription/google"
+  version = "~> {{TFGoogleSubscriptionModuleVersion}}"
+
+  queue = "{{ $consumer.Queue }}"
+  topic = "projects/{{ .Project }}/topics/hedwig-{{ .Topic }}"
+
+  {{with $consumer.ServiceAccount -}}
+  iam_service_account = {{hclvalue .}}
+  {{- end}}
+
+  {{with $consumer.Labels -}}
+  labels = {{hclvalue .}}
+  {{- end}}
+}
+
+{{end}}
 {{- end}}

@@ -19,7 +19,13 @@
                 "env": "dev"
             },
             "subscriptions": [
-              "my-topic2"
+                "my-topic2"
+            ],
+            "cross_project_subscriptions": [
+                {
+                    "project": "other-project",
+                    "topic": "my-topic2"
+                }
             ],
             "service_account": "secondapp@project.iam.gserviceaccount.com"
         }

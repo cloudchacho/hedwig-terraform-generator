@@ -7,12 +7,19 @@ import (
 	"regexp"
 )
 
+// GoogleCrossProjectSubscription struct represents a cross-project subscription for a Hedwig consumer app
+type GoogleCrossProjectSubscription struct {
+	Project string `json:"project"`
+	Topic   string `json:"topic"`
+}
+
 // GooglePullConsumer struct represents a Hedwig consumer app
 type GooglePullConsumer struct {
-	Queue          string            `json:"queue"`
-	Subscriptions  []string          `json:"subscriptions"`
-	ServiceAccount string            `json:"service_account"`
-	Labels         map[string]string `json:"labels"`
+	Queue                     string                           `json:"queue"`
+	Subscriptions             []string                         `json:"subscriptions"`
+	CrossProjectSubscriptions []GoogleCrossProjectSubscription `json:"cross_project_subscriptions"`
+	ServiceAccount            string                           `json:"service_account"`
+	Labels                    map[string]string                `json:"labels"`
 }
 
 // GoogleTopic struct represents a Hedwig topic
@@ -73,7 +80,7 @@ func (c *GoogleConfig) validateQueueConsumers() error {
 				"invalid subscription name: |%s|, must match regex: %s", consumer.Queue, googleSubscriptionNameRegex)
 		}
 
-		if len(consumer.Subscriptions) == 0 {
+		if len(consumer.Subscriptions) == 0 && len(consumer.CrossProjectSubscriptions) == 0 {
 			return fmt.Errorf("consumer must contain at least one subscription: '%s'", consumer.Subscriptions)
 		}
 

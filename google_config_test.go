@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -116,6 +117,12 @@ func TestValidJSON(t *testing.T) {
       },
       "subscriptions": [
         "topic"
+      ],
+      "cross_project_subscriptions": [
+        {
+          "project": "other-project",
+          "topic": "topic"
+        }
       ]
     }
   ]
@@ -126,6 +133,7 @@ func TestValidJSON(t *testing.T) {
 			{
 				"dev-myapp",
 				[]string{"topic"},
+				[]GoogleCrossProjectSubscription{{"other-project", "topic"}},
 				"myapp@project.iam.gserviceaccount.com",
 				map[string]string{
 					"app": "myapp",
