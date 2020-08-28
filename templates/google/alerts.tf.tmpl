@@ -21,11 +21,11 @@ module "alerts-{{hclident $consumer.Queue}}" {
 }
 
 {{range $consumer.Subscriptions -}}
-module "alerts-{{hclident $consumer.Queue}}-{{hclident .}}" {
+module "alerts-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name = module.sub-{{hclident $consumer.Queue}}-{{hclident .}}.subscription_name
+  subscription_name = module.sub-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}.subscription_name
 
   {{ with variables.GoogleProjectAlerting -}}
   alerting_project = var.alerting_project

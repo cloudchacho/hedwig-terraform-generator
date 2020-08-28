@@ -8,18 +8,29 @@ import (
 	"strings"
 )
 
-// AWSCrossProjectSubscription struct represents a cross-project subscription for a Hedwig consumer app
-type AWSCrossProjectSubscription struct {
+// AWSSubscription struct represents a subscription for a Hedwig consumer app
+type AWSSubscription struct {
 	AccountID string `json:"account_id"`
 	Topic     string `json:"topic"`
 }
 
+func (s *AWSSubscription) UnmarshalJSON(data []byte) error {
+	type AWSSubscriptionAlias AWSSubscription
+	if err := json.Unmarshal(data, (*AWSSubscriptionAlias)(s)); err != nil {
+		var topic string
+		if strErr := json.Unmarshal(data, &topic); strErr != nil {
+			return err
+		}
+		s.Topic = topic
+	}
+	return nil
+}
+
 // AWSQueueConsumer struct represents a Hedwig consumer app
 type AWSQueueConsumer struct {
-	Queue                     string                        `json:"queue"`
-	Tags                      map[string]string             `json:"tags"`
-	Subscriptions             []string                      `json:"subscriptions"`
-	CrossProjectSubscriptions []AWSCrossProjectSubscription `json:"cross_project_subscriptions"`
+	Queue         string            `json:"queue"`
+	Tags          map[string]string `json:"tags"`
+	Subscriptions []AWSSubscription `json:"subscriptions"`
 }
 
 // AWSLambdaConsumer struct represents a Hedwig subscription for a lambda app
@@ -110,7 +121,7 @@ func (c *AWSConfig) validateQueueConsumers() error {
 			return fmt.Errorf("invalid queue name, must only contain: [A-Z], [0-9], [-]: '%s'", consumer.Queue)
 		}
 
-		if len(consumer.Subscriptions) == 0 && len(consumer.CrossProjectSubscriptions) == 0 {
+		if len(consumer.Subscriptions) == 0 {
 			return fmt.Errorf("consumer must contain at least one subscription: '%s'", consumer.Queue)
 		}
 
@@ -118,12 +129,12 @@ func (c *AWSConfig) validateQueueConsumers() error {
 			// verify that topic was declared
 			found := false
 			for _, topic := range c.Topics {
-				if topic == subscription {
+				if topic == subscription.Topic {
 					found = true
 				}
 			}
 			if !found {
-				return fmt.Errorf("topic not declared: '%s'", subscription)
+				return fmt.Errorf("topic not declared: '%s'", subscription.Topic)
 			}
 		}
 	}

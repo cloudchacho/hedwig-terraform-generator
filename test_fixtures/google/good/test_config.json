@@ -7,8 +7,12 @@
                 "env": "dev"
             },
             "subscriptions": [
-              "my-topic",
-              "my-topic2"
+                {
+                    "topic": "my-topic"
+                },
+                {
+                    "topic": "my-topic2"
+                }
             ],
             "service_account": "myapp@project.iam.gserviceaccount.com"
         },
@@ -19,9 +23,9 @@
                 "env": "dev"
             },
             "subscriptions": [
-                "my-topic2"
-            ],
-            "cross_project_subscriptions": [
+                {
+                    "topic": "my-topic2"
+                },
                 {
                     "project": "other-project",
                     "topic": "my-topic2"

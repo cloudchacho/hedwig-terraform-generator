@@ -74,7 +74,7 @@ func TestValidateName(t *testing.T) {
 
 func TestValidateSubscriptionTopic(t *testing.T) {
 	config := GoogleConfig{
-		PullConsumers: []*GooglePullConsumer{{Queue: "myapp", Subscriptions: []string{"does-not-exist"}}},
+		PullConsumers: []*GooglePullConsumer{{Queue: "myapp", Subscriptions: []GoogleSubscription{{Topic: "does-not-exist"}}}},
 	}
 	assert.EqualError(
 		t,
@@ -86,7 +86,7 @@ func TestValidateSubscriptionTopic(t *testing.T) {
 func TestValidateSubscriptionLabel(t *testing.T) {
 	config := GoogleConfig{
 		PullConsumers: []*GooglePullConsumer{
-			{Queue: "myapp", Subscriptions: []string{"topic"}, Labels: map[string]string{"UPPER": ""}},
+			{Queue: "myapp", Subscriptions: []GoogleSubscription{{Topic: "topic"}}, Labels: map[string]string{"UPPER": ""}},
 		},
 		Topics: []*GoogleTopic{{Name: "topic"}},
 	}
@@ -116,12 +116,14 @@ func TestValidJSON(t *testing.T) {
         "env": "dev"
       },
       "subscriptions": [
-        "topic"
-      ],
-      "cross_project_subscriptions": [
+        "topic",
         {
           "project": "other-project",
-          "topic": "topic"
+          "topic": "topic2"
+        },
+        {
+          "topic": "topic3",
+          "enable_ordering": true
         }
       ]
     }
@@ -132,8 +134,7 @@ func TestValidJSON(t *testing.T) {
 		PullConsumers: []*GooglePullConsumer{
 			{
 				"dev-myapp",
-				[]string{"topic"},
-				[]GoogleCrossProjectSubscription{{"other-project", "topic"}},
+				[]GoogleSubscription{{Topic: "topic"}, {Project: "other-project", Topic: "topic2"}, {EnableOrdering: true, Topic: "topic3"}},
 				"myapp@project.iam.gserviceaccount.com",
 				map[string]string{
 					"app": "myapp",

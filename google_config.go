@@ -7,19 +7,32 @@ import (
 	"regexp"
 )
 
-// GoogleCrossProjectSubscription struct represents a cross-project subscription for a Hedwig consumer app
-type GoogleCrossProjectSubscription struct {
-	Project string `json:"project"`
-	Topic   string `json:"topic"`
+// GoogleSubscription struct represents a subscription for a Hedwig consumer app
+type GoogleSubscription struct {
+	// empty for current project
+	Project        string `json:"project"`
+	Topic          string `json:"topic"`
+	EnableOrdering bool   `json:"enable_ordering"`
+}
+
+func (s *GoogleSubscription) UnmarshalJSON(data []byte) error {
+	type GoogleSubscriptionAlias GoogleSubscription
+	if err := json.Unmarshal(data, (*GoogleSubscriptionAlias)(s)); err != nil {
+		var topic string
+		if strErr := json.Unmarshal(data, &topic); strErr != nil {
+			return err
+		}
+		s.Topic = topic
+	}
+	return nil
 }
 
 // GooglePullConsumer struct represents a Hedwig consumer app
 type GooglePullConsumer struct {
-	Queue                     string                           `json:"queue"`
-	Subscriptions             []string                         `json:"subscriptions"`
-	CrossProjectSubscriptions []GoogleCrossProjectSubscription `json:"cross_project_subscriptions"`
-	ServiceAccount            string                           `json:"service_account"`
-	Labels                    map[string]string                `json:"labels"`
+	Queue          string               `json:"queue"`
+	Subscriptions  []GoogleSubscription `json:"subscriptions"`
+	ServiceAccount string               `json:"service_account"`
+	Labels         map[string]string    `json:"labels"`
 }
 
 // GoogleTopic struct represents a Hedwig topic
@@ -80,20 +93,20 @@ func (c *GoogleConfig) validateQueueConsumers() error {
 				"invalid subscription name: |%s|, must match regex: %s", consumer.Queue, googleSubscriptionNameRegex)
 		}
 
-		if len(consumer.Subscriptions) == 0 && len(consumer.CrossProjectSubscriptions) == 0 {
-			return fmt.Errorf("consumer must contain at least one subscription: '%s'", consumer.Subscriptions)
+		if len(consumer.Subscriptions) == 0 {
+			return fmt.Errorf("consumer must contain at least one subscription: '%s'", consumer.Queue)
 		}
 
 		for _, subscription := range consumer.Subscriptions {
 			// verify that topic was declared
 			found := false
 			for _, topic := range c.Topics {
-				if topic.Name == subscription {
+				if topic.Name == subscription.Topic {
 					found = true
 				}
 			}
 			if !found {
-				return fmt.Errorf("topic not declared: |%s|", subscription)
+				return fmt.Errorf("topic not declared: |%s|", subscription.Topic)
 			}
 		}
 

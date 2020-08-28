@@ -69,7 +69,7 @@ func TestValidateAWSQueue(t *testing.T) {
 
 func TestValidateAWSSubscriptionTopic(t *testing.T) {
 	config := AWSConfig{
-		QueueConsumers: []*AWSQueueConsumer{{Queue: "QUEUE", Subscriptions: []string{"does-not-exist"}}},
+		QueueConsumers: []*AWSQueueConsumer{{Queue: "QUEUE", Subscriptions: []AWSSubscription{{Topic: "does-not-exist"}}}},
 	}
 	assert.EqualError(
 		t,
@@ -104,12 +104,10 @@ func TestValidAWSJSON(t *testing.T) {
         "Env": "dev"
       },
       "subscriptions": [
-        "my-topic"
-      ],
-      "cross_project_subscriptions": [
+        "my-topic",
         {
           "account_id": "54321",
-          "topic": "my-topic"
+          "topic": "my-topic2"
         }
       ]
     }
@@ -132,8 +130,7 @@ func TestValidAWSJSON(t *testing.T) {
 					"App": "myapp",
 					"Env": "dev",
 				},
-				[]string{"my-topic"},
-				[]AWSCrossProjectSubscription{{"54321", "my-topic"}},
+				[]AWSSubscription{{Topic: "my-topic"}, {"54321", "my-topic2"}},
 			},
 		},
 		LambdaConsumers: []*AWSLambdaConsumer{
@@ -177,8 +174,7 @@ func TestValidJSONNoLambda(t *testing.T) {
 					"App": "myapp",
 					"Env": "dev",
 				},
-				[]string{"my-topic"},
-				nil,
+				[]AWSSubscription{{Topic: "my-topic"}},
 			},
 		},
 		Topics: []string{"my-topic"},

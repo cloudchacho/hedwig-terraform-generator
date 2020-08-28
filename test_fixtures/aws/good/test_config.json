@@ -7,8 +7,12 @@
                 "Env": "dev"
             },
             "subscriptions": [
-              "my-topic",
-              "my-topic2"
+                {
+                    "topic": "my-topic"
+                },
+                {
+                    "topic": "my-topic2"
+                }
             ]
         },
         {
@@ -18,14 +22,14 @@
                 "Env": "dev"
             },
             "subscriptions": [
-              "my-topic2"
-            ],
-            "cross_project_subscriptions": [
-            {
-                "account_id": "54321",
-                "topic": "my-topic2"
-            }
-        ]
+                {
+                    "topic": "my-topic2"
+                },
+                {
+                    "account_id": "54321",
+                    "topic": "my-topic2"
+                }
+            ]
         }
     ],
     "lambda_consumers": [

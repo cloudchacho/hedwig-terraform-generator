@@ -2,30 +2,12 @@
 
 {{range $consumer := .PullConsumers -}}
 {{range $consumer.Subscriptions -}}
-module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
+module "sub-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}" {
   source  = "standard-ai/hedwig-subscription/google"
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "{{ $consumer.Queue }}"
-  topic = module.topic-{{hclident .}}.name
-
-  {{with $consumer.ServiceAccount -}}
-  iam_service_account = {{hclvalue .}}
-  {{- end}}
-
-  {{with $consumer.Labels -}}
-  labels = {{hclvalue .}}
-  {{- end}}
-}
-
-{{end}}
-{{range $consumer.CrossProjectSubscriptions -}}
-module "sub-{{hclident $consumer.Queue}}-{{hclident .Project}}-{{hclident .Topic}}" {
-  source  = "standard-ai/hedwig-subscription/google"
-  version = "~> {{TFGoogleSubscriptionModuleVersion}}"
-
-  queue = "{{ $consumer.Queue }}"
-  topic = "projects/{{ .Project }}/topics/hedwig-{{ .Topic }}"
+  topic = {{if (eq .Project "")}} module.topic-{{hclident .Topic}}.name {{else}}"projects/{{ .Project }}/topics/hedwig-{{ .Topic }}"{{end}}
 
   {{with $consumer.ServiceAccount -}}
   iam_service_account = {{hclvalue .}}

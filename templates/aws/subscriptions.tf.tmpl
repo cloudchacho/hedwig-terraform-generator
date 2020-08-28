@@ -2,25 +2,15 @@
 
 {{range $consumer := .QueueConsumers -}}
 {{range $consumer.Subscriptions -}}
-module "sub-{{hclident $consumer.Queue}}-{{hclident .}}" {
+module "sub-{{hclident $consumer.Queue}}-{{if (ne .AccountID "")}}{{hclident .AccountID}}-{{end}}{{hclident .Topic}}" {
   source  = "Automatic/hedwig-queue-subscription/aws"
   version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
 
   queue = "${module.consumer-{{hclident $consumer.Queue}}.queue_arn}"
-  topic = "${module.topic-{{hclident .}}.arn}"
+  topic = {{if (eq .AccountID "")}} "${module.topic-{{hclident .Topic}}.arn}" {{else}}"arn:aws:sns:${var.aws_region}:{{ .AccountID }}:hedwig-{{ .Topic }}"{{end}}
 }
-{{- end}}
-
-{{range $consumer.CrossProjectSubscriptions -}}
-module "sub-{{hclident $consumer.Queue}}-{{hclident .AccountID}}-{{hclident .Topic}}" {
-  source  = "Automatic/hedwig-queue-subscription/aws"
-  version = "~> {{TFAWSQueueSubscriptionModuleVersion}}"
-
-  queue = "${module.consumer-{{hclident $consumer.Queue}}.queue_arn}"
-  topic = "arn:aws:sns:${var.aws_region}:{{ .AccountID }}:hedwig-{{ .Topic }}"
-}
-{{- end}}
-{{- end}}
+{{end}}
+{{end}}
 
 {{range $consumer := .LambdaConsumers -}}
 {{range $consumer.Subscriptions -}}
