@@ -118,11 +118,11 @@ module "alerts-dev-secondapp-my-topic-2" {
   ]
 }
 
-module "alerts-dev-secondapp-other-project-my-topic-2" {
+module "alerts-dev-secondapp-other-project-my-topic-3" {
   source  = "standard-ai/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
-  subscription_name = module.sub-dev-secondapp-other-project-my-topic-2.subscription_name
+  subscription_name = module.sub-dev-secondapp-other-project-my-topic-3.subscription_name
 
   alerting_project = var.alerting_project
 

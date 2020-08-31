@@ -28,7 +28,7 @@
                 },
                 {
                     "project": "other-project",
-                    "topic": "my-topic2"
+                    "topic": "my-topic3"
                 }
             ],
             "service_account": "secondapp@project.iam.gserviceaccount.com"

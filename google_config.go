@@ -98,6 +98,10 @@ func (c *GoogleConfig) validateQueueConsumers() error {
 		}
 
 		for _, subscription := range consumer.Subscriptions {
+			if subscription.Project != "" {
+				// cross project topics will be created in a different config
+				continue
+			}
 			// verify that topic was declared
 			found := false
 			for _, topic := range c.Topics {
