@@ -11,7 +11,8 @@
                     "topic": "my-topic"
                 },
                 {
-                    "topic": "my-topic2"
+                    "topic": "my-topic2",
+                    "enable_ordering": true
                 }
             ],
             "service_account": "myapp@project.iam.gserviceaccount.com"

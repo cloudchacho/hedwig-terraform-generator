@@ -23,6 +23,8 @@ module "sub-dev-myapp-my-topic-2" {
   queue = "dev-myapp"
   topic = module.topic-my-topic-2.name
 
+  enable_message_ordering = true
+
   iam_service_account = "myapp@project.iam.gserviceaccount.com"
 
   labels = {

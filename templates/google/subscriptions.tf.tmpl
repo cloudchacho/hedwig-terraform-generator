@@ -9,6 +9,10 @@ module "sub-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Proj
   queue = "{{ $consumer.Queue }}"
   topic = {{if (eq .Project "")}} module.topic-{{hclident .Topic}}.name {{else}}"projects/{{ .Project }}/topics/hedwig-{{ .Topic }}"{{end}}
 
+  {{ if .EnableOrdering -}}
+  enable_message_ordering = true
+  {{- end}}
+
   {{with $consumer.ServiceAccount -}}
   iam_service_account = {{hclvalue .}}
   {{- end}}
