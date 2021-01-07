@@ -18,6 +18,9 @@ module "alerts-{{hclident $consumer.Queue}}" {
 
   queue_high_message_count_notification_channels = {{ hclvalue channels.QueueAlertNotificationChannels }}
   dlq_high_message_count_notification_channels   = {{ hclvalue channels.DLQAlertNotificationChannels }}
+  {{ with or .HighMessageCountThreshold highMessageCountThreshold -}}
+    queue_alarm_high_message_count_threshold = {{.}}
+  {{- end}}
 }
 
 {{range $consumer.Subscriptions -}}
@@ -37,6 +40,9 @@ module "alerts-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .P
 
   queue_high_message_count_notification_channels = {{ hclvalue channels.QueueAlertNotificationChannels }}
   dlq_high_message_count_notification_channels   = {{ hclvalue channels.DLQAlertNotificationChannels }}
+  {{ with or .HighMessageCountThreshold highMessageCountThreshold -}}
+    queue_alarm_high_message_count_threshold = {{.}}
+  {{- end}}
 }
 
 {{end}}

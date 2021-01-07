@@ -10,9 +10,10 @@ import (
 // GoogleSubscription struct represents a subscription for a Hedwig consumer app
 type GoogleSubscription struct {
 	// empty for current project
-	Project        string `json:"project"`
-	Topic          string `json:"topic"`
-	EnableOrdering bool   `json:"enable_ordering"`
+	Project                   string `json:"project"`
+	Topic                     string `json:"topic"`
+	EnableOrdering            bool   `json:"enable_ordering"`
+	HighMessageCountThreshold int    `json:"high_message_count_threshold,omitempty"`
 }
 
 func (s *GoogleSubscription) UnmarshalJSON(data []byte) error {
@@ -29,10 +30,11 @@ func (s *GoogleSubscription) UnmarshalJSON(data []byte) error {
 
 // GooglePullConsumer struct represents a Hedwig consumer app
 type GooglePullConsumer struct {
-	Queue          string               `json:"queue"`
-	Subscriptions  []GoogleSubscription `json:"subscriptions"`
-	ServiceAccount string               `json:"service_account"`
-	Labels         map[string]string    `json:"labels"`
+	Queue                     string               `json:"queue"`
+	Subscriptions             []GoogleSubscription `json:"subscriptions"`
+	ServiceAccount            string               `json:"service_account"`
+	Labels                    map[string]string    `json:"labels"`
+	HighMessageCountThreshold int                  `json:"high_message_count_threshold,omitempty"`
 }
 
 // GoogleTopic struct represents a Hedwig topic

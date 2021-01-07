@@ -72,6 +72,7 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 				fmt.Sprintf(`--%s=pager_action2`, dlqAlertAlarmActionsFlag),
 				fmt.Sprintf(`--%s=pager_action`, dlqAlertOKActionsFlag),
 				fmt.Sprintf(`--%s=pager_action2`, dlqAlertOKActionsFlag),
+				fmt.Sprintf(`--%s=10000`, highMessageCountThresholdFlag),
 			)
 		}
 	} else if cloudProvider == cloudProviderGoogle {
@@ -93,6 +94,7 @@ func argsForTest(cloudProvider string, testDir string, configFilepath string) []
 					`--%s=projects/myProject/notificationChannels/10357685029951383687`, dataflowAlertNotificationChannelsFlag),
 				fmt.Sprintf(
 					`--%s=projects/myProject/notificationChannels/95138368710357685029`, dataflowAlertNotificationChannelsFlag),
+				fmt.Sprintf(`--%s=10000`, highMessageCountThresholdFlag),
 			)
 		}
 		if testDir == "good" || testDir == "one_topic_firehose" {

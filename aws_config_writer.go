@@ -45,6 +45,8 @@ func (w *awsConfigWriter) initTemplates() (*template.Template, error) {
 	}
 	templates := template.New(files[0]) // need an arbitrary name
 	templates = templates.Funcs(template.FuncMap{
+		"highMessageCountThreshold": func() int { return w.c.Int(highMessageCountThresholdFlag) },
+
 		"generator_version": func() string { return VERSION },
 		"actions":           func() map[string][]string { return actions },
 		"variables":         func() map[string]string { return variables },

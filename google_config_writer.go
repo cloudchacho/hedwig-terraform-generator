@@ -59,6 +59,8 @@ func (w *googleConfigWriter) initTemplates() (*template.Template, error) {
 	}
 	templates := template.New(files[0]) // need an arbitrary name
 	templates = templates.Funcs(template.FuncMap{
+		"highMessageCountThreshold": func() int { return w.c.Int(highMessageCountThresholdFlag) },
+
 		"generator_version": func() string { return VERSION },
 		"channels":          func() map[string][]string { return channels },
 		"variables":         func() map[string]string { return variables },

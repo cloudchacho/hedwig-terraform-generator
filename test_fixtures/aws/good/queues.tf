@@ -34,6 +34,8 @@ module "consumer-dev-myapp" {
     "pager_action",
     "pager_action2",
   ]
+
+  queue_alarm_high_message_count_threshold = 100000
 }
 
 module "consumer-dev-secondapp" {
@@ -69,4 +71,6 @@ module "consumer-dev-secondapp" {
     "pager_action",
     "pager_action2",
   ]
+
+  queue_alarm_high_message_count_threshold = 10000
 }

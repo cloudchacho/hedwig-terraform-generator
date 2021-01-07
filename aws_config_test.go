@@ -109,7 +109,8 @@ func TestValidAWSJSON(t *testing.T) {
           "account_id": "54321",
           "topic": "my-topic2"
         }
-      ]
+      ],
+      "high_message_count_threshold": 10000
     }
   ],
   "lambda_consumers": [
@@ -131,6 +132,7 @@ func TestValidAWSJSON(t *testing.T) {
 					"Env": "dev",
 				},
 				[]AWSSubscription{{Topic: "my-topic"}, {"54321", "my-topic2"}},
+				10000,
 			},
 		},
 		LambdaConsumers: []*AWSLambdaConsumer{
@@ -161,7 +163,8 @@ func TestValidJSONNoLambda(t *testing.T) {
       },
       "subscriptions": [
         "my-topic"
-      ]
+      ],
+      "high_message_count_threshold": 10000
     }
   ]
 }`)
@@ -175,6 +178,7 @@ func TestValidJSONNoLambda(t *testing.T) {
 					"Env": "dev",
 				},
 				[]AWSSubscription{{Topic: "my-topic"}},
+				10000,
 			},
 		},
 		Topics: []string{"my-topic"},

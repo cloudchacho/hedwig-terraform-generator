@@ -28,9 +28,10 @@ func (s *AWSSubscription) UnmarshalJSON(data []byte) error {
 
 // AWSQueueConsumer struct represents a Hedwig consumer app
 type AWSQueueConsumer struct {
-	Queue         string            `json:"queue"`
-	Tags          map[string]string `json:"tags"`
-	Subscriptions []AWSSubscription `json:"subscriptions"`
+	Queue                     string            `json:"queue"`
+	Tags                      map[string]string `json:"tags"`
+	Subscriptions             []AWSSubscription `json:"subscriptions"`
+	HighMessageCountThreshold int               `json:"high_message_count_threshold,omitempty"`
 }
 
 // AWSLambdaConsumer struct represents a Hedwig subscription for a lambda app

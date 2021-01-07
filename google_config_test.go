@@ -125,7 +125,8 @@ func TestValidJSON(t *testing.T) {
           "topic": "topic3",
           "enable_ordering": true
         }
-      ]
+      ],
+      "high_message_count_threshold": 10000
     }
   ]
 }`)
@@ -140,6 +141,7 @@ func TestValidJSON(t *testing.T) {
 					"app": "myapp",
 					"env": "dev",
 				},
+				10000,
 			},
 		},
 		Topics: []*GoogleTopic{{"topic", false, []string{"myapp@project.iam.gserviceaccount.com"}}},

@@ -21,6 +21,7 @@ module "alerts-dev-myapp" {
     "projects/myProject/notificationChannels/10357685029951383687",
     "projects/myProject/notificationChannels/95138368710357685029"
   ]
+  queue_alarm_high_message_count_threshold = 10000
 }
 
 module "alerts-dev-myapp-my-topic" {
@@ -42,6 +43,7 @@ module "alerts-dev-myapp-my-topic" {
     "projects/myProject/notificationChannels/10357685029951383687",
     "projects/myProject/notificationChannels/95138368710357685029"
   ]
+  queue_alarm_high_message_count_threshold = 10000
 }
 
 module "alerts-dev-myapp-my-topic-2" {
@@ -63,6 +65,7 @@ module "alerts-dev-myapp-my-topic-2" {
     "projects/myProject/notificationChannels/10357685029951383687",
     "projects/myProject/notificationChannels/95138368710357685029"
   ]
+  queue_alarm_high_message_count_threshold = 10000
 }
 
 module "alerts-dev-secondapp" {
@@ -85,6 +88,7 @@ module "alerts-dev-secondapp" {
     "projects/myProject/notificationChannels/10357685029951383687",
     "projects/myProject/notificationChannels/95138368710357685029"
   ]
+  queue_alarm_high_message_count_threshold = 10000
 }
 
 module "alerts-dev-secondapp-my-topic-2" {
@@ -106,4 +110,5 @@ module "alerts-dev-secondapp-my-topic-2" {
     "projects/myProject/notificationChannels/10357685029951383687",
     "projects/myProject/notificationChannels/95138368710357685029"
   ]
+  queue_alarm_high_message_count_threshold = 10000
 }

@@ -21,6 +21,9 @@ module "consumer-{{hclident .Queue}}" {
       dlq_ok_high_message_count_actions      = {{ hclvalue actions.DLQAlertOKActions }}
       queue_alarm_high_message_count_actions = {{ hclvalue actions.QueueAlertAlarmActions }}
       queue_ok_high_message_count_actions    = {{ hclvalue actions.QueueAlertOKActions }}
+      {{ with or .HighMessageCountThreshold highMessageCountThreshold -}}
+        queue_alarm_high_message_count_threshold = {{.}}
+      {{- end}}
   {{- end}}
 }
 {{- end}}

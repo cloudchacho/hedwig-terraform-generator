@@ -17,7 +17,7 @@ const (
 
 const (
 	// VERSION represents the version of the generator tool
-	VERSION = "v4.3.3"
+	VERSION = "v4.4.0"
 
 	// TFAWSQueueModuleVersion represents the version of the AWS hedwig-queue module
 	TFAWSQueueModuleVersion = "1.0.0"
@@ -112,6 +112,9 @@ const (
 
 	// queueAlertOKActionsFlag represents the cli flag for queue alert actions on OK
 	queueAlertOKActionsFlag = "queue-alert-ok-actions"
+
+	// highMessageCountThresholdFlag represents the cli flag for high message count
+	highMessageCountThresholdFlag = "high-message-count-threshold"
 )
 
 var providerSpecificFlags = map[string][]string{
@@ -151,12 +154,14 @@ var providerAlertingFlags = map[string][]string{
 		queueAlertOKActionsFlag,
 		dlqAlertAlarmActionsFlag,
 		dlqAlertOKActionsFlag,
+		highMessageCountThresholdFlag,
 	},
 	cloudProviderGoogle: {
 		queueAlertNotificationChannelsFlag,
 		dlqAlertNotificationChannelsFlag,
 		dataflowAlertNotificationChannelsFlag,
 		googleProjectAlerting,
+		highMessageCountThresholdFlag,
 	},
 }
 
@@ -290,6 +295,7 @@ func generateConfigFileStructure(c *cli.Context) error {
 						"Env": "dev",
 					},
 					[]AWSSubscription{{"54321", "my-topic"}},
+					100000,
 				},
 			},
 			LambdaConsumers: []*AWSLambdaConsumer{
@@ -315,12 +321,13 @@ func generateConfigFileStructure(c *cli.Context) error {
 			PullConsumers: []*GooglePullConsumer{
 				{
 					"dev-myapp",
-					[]GoogleSubscription{{"other-project", "my-topic", false}},
+					[]GoogleSubscription{{"other-project", "my-topic", false, 100000}},
 					"myapp@project.iam.gserviceaccount.com",
 					map[string]string{
 						"App": "myapp",
 						"Env": "dev",
 					},
+					100000,
 				},
 			},
 		}
@@ -385,6 +392,10 @@ func runApp(args []string) error {
 				cli.StringSliceFlag{
 					Name:  dlqAlertOKActionsFlag,
 					Usage: "Cloudwatch Action ARNs for high message count in dead-letter queue when OK (AWS only)",
+				},
+				cli.IntFlag{
+					Name:  highMessageCountThresholdFlag,
+					Usage: "High message count threshold",
 				},
 				cli.StringFlag{
 					Name:  dataflowTmpGCSLocationFlag,
