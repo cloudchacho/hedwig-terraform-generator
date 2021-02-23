@@ -27,10 +27,10 @@ func hclFmtV2(filename string) error {
 	res := hclwrite.Format(src)
 
 	// formatter writes multiple new lines for some reason
-	for bytes.Index(res, []byte("\n\n\n")) != -1 {
+	for bytes.Contains(res, []byte("\n\n\n")) {
 		res = bytes.ReplaceAll(res, []byte("\n\n\n"), []byte("\n\n"))
 	}
-	for bytes.Index(res, []byte("\n\n}")) != -1 {
+	for bytes.Contains(res, []byte("\n\n}")) {
 		res = bytes.ReplaceAll(res, []byte("\n\n}"), []byte("\n}"))
 	}
 	res = append(bytes.TrimSpace(res), byte('\n'))

@@ -7,6 +7,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sergi/go-diff v1.0.0
 	github.com/stretchr/testify v1.3.0
+	golang.org/x/text v0.3.3 // indirect
 	gopkg.in/urfave/cli.v1 v1.20.0
 )
 

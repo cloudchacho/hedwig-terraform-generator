@@ -62,6 +62,7 @@ variable "aws_account_id" {
 	defer os.Remove(filename)
 
 	err := hclFmtDir(".")
+	require.NoError(t, err)
 
 	contents, err = ioutil.ReadFile(filename)
 	require.NoError(t, err)
@@ -82,6 +83,7 @@ variable "aws_account_id" {
 	defer os.Remove(filename)
 
 	err := hclFmtDirV2(".")
+	require.NoError(t, err)
 
 	contents, err = ioutil.ReadFile(filename)
 	require.NoError(t, err)

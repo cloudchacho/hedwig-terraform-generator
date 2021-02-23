@@ -1,0 +1,30 @@
+name: Terraform Syntax
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '**.tf'
+  pull_request:
+    paths:
+      - '**.tf'
+
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup
+        name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          terraform_version: 0.12.29
+
+      - id: checkout
+        name: Checkout PR
+        uses: actions/checkout@v2
+
+      - id: check
+        name: Check format
+        run: terraform fmt -check -recursive -diff
