@@ -3,7 +3,7 @@
 {{range $consumer := .PullConsumers -}}
 {{range $consumer.Subscriptions -}}
 module "sub-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}" {
-  source  = "standard-ai/hedwig-subscription/google"
+  source  = "cloudchacho/hedwig-subscription/google"
   version = "~> {{TFGoogleSubscriptionModuleVersion}}"
 
   queue = "{{ $consumer.Queue }}"

@@ -2,7 +2,7 @@
 
 {{range .PullConsumers -}}
 module "consumer-{{hclident .Queue}}" {
-  source  = "standard-ai/hedwig-queue/google"
+  source  = "cloudchacho/hedwig-queue/google"
   version = "~> {{TFGoogleQueueModuleVersion}}"
 
   queue          = "{{.Queue}}"

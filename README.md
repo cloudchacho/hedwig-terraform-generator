@@ -15,7 +15,7 @@ away details about [Terraform](https://www.terraform.io/).
 ### Installation
 
 Download the latest version of the release from 
-[Github releases](https://github.com/standard-ai/hedwig-terraform-generator/releases) - 
+[Github releases](https://github.com/cloudchacho/hedwig-terraform-generator/releases) - 
 it's distributed as a zip containing a Go binary file.
 
 ### Configuration
@@ -55,7 +55,7 @@ Assuming that you have go installed, set up your environment:
 
 ```sh
 $ # in a location NOT in your GOPATH:
-$ git checkout github.com/standard-ai/hedwig-terraform-generator
+$ git checkout github.com/cloudchacho/hedwig-terraform-generator
 $ cd hedwig-terraform-generator
 $ go get -mod=readonly -v ./...
 $ GO111MODULE=off go get github.com/go-bindata/go-bindata/...
@@ -76,7 +76,7 @@ $ go test -run TestGenerate ./...
 
 ## Release Notes
 
-[Github Releases](https://github.com/standard-ai/hedwig-terraform-generator/releases)
+[Github Releases](https://github.com/cloudchacho/hedwig-terraform-generator/releases)
 
 ## How to publish
 

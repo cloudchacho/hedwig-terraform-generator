@@ -2,7 +2,7 @@
 
 {{range $consumer := .PullConsumers -}}
 module "alerts-{{hclident $consumer.Queue}}" {
-  source  = "standard-ai/hedwig-alerts/google"
+  source  = "cloudchacho/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
   subscription_name     = module.consumer-{{hclident $consumer.Queue}}.subscription_name
@@ -25,7 +25,7 @@ module "alerts-{{hclident $consumer.Queue}}" {
 
 {{range $consumer.Subscriptions -}}
 module "alerts-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}" {
-  source  = "standard-ai/hedwig-alerts/google"
+  source  = "cloudchacho/hedwig-alerts/google"
   version = "~> {{TFGoogleAlertsModuleVersion}}"
 
   subscription_name = module.sub-{{hclident $consumer.Queue}}-{{if (ne .Project "")}}{{hclident .Project}}-{{end}}{{hclident .Topic}}.subscription_name

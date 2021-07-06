@@ -2,7 +2,7 @@
 
 {{range .Topics -}}
 module "topic-{{hclident .Name}}" {
-  source  = "standard-ai/hedwig-topic/google"
+  source  = "cloudchacho/hedwig-topic/google"
   version = "~> {{TFGoogleTopicModuleVersion}}"
 
   topic = "{{ .Name }}"
